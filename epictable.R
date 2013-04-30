@@ -1,71 +1,3 @@
-library(survival)
-library(foreign)
-library(plyr)
-# functions ####
-perc <- function(d,n){
-  round((d/n)*100,2)
-}
-
-rate_per_k <- function(x,y){
-  (x/y)*1000
-}
-
-or_wrapper<-function(x){
-  cbind(OR=1/exp(coef(x)),exp(confint(x)))
-}
-
-se_log_rr <- function(x,y){
-  sqrt((1/x)+(1/y))
-}
-
-z_rr <- function(x,y){
-  log(x)/y
-}
-
-p_rr <- function(x){
-  2*pnorm(-abs(x))
-}
-
-decimal2<-function(x){paste(x,".00",sep="")} # decimal replacer for character strings, 2 decimal places
-
-decimal1<-function(x){paste(x,"0",sep="")} # decimal replacer for character strings, 1 decimal place
-
-simpleCap<-function(x){
-  s<-as.character(x)
-  s<-paste(toupper(substring(s,1,1)),substring(s,2),sep="")
-  #  s<-as.factor(s)
-}
-
-# reading data in ####
-#,p_val=round(summary(x)$coefficients[,4],6)
-first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
-# can start with very basics. How many children, how many events. Age and sex. 
-names(first)
-first$lbw <- as.character(first$lbw)
-table(is.na(first$lbw))
-all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
-head(all)
-length(all$id)
-table(all$numprevepisode)
-447+160+56+14+4+2
-all[all$numprevepisode!=0,]
-all[all$id==6,]
-first[first$id==6,]
-
-# get max number of episodes by id and time at risk
-all$dar <- as.numeric(all$endfoll - all$startfoll,format="days")
-head(all$dar)
-max.episodes <- ddply(all, .(id), summarise, max=max(numprevepisode), tdar=sum(dar))
-head(max.episodes)
-
-# Combine max episodes and tdar into first dataframe
-length(first$id)
-first <- merge(first, max.episodes, all.x=TRUE, by.x="id", by.y="id")
-length(first$id)
-head(first)
-first$case <- 0
-first$case[first$exittype == "RV diarrhoea"] <- 1
-table(first$case, first$exittype)
 
 # Boring tables ####
 
@@ -99,8 +31,6 @@ neo$z <- z_rr(neo$rr, neo$se)
 neo$p <- p_rr(neo$z)
 neo
 neo$var <-"neo"
-names(sex)[1] <- "val"
-sex$var <- "sex"
 names(neo)[1] <- "val"
 t1 <- rbind(sex,neo)
 t1$val <- as.character(t1$val)
@@ -126,11 +56,11 @@ edumoth$lci <- edumoth$rr/exp(1.96*edumoth$se)
 edumoth$uci <- edumoth$rr*exp(1.96*edumoth$se)
 edumoth$z <- z_rr(edumoth$rr, edumoth$se)
 edumoth$p <- p_rr(edumoth$z)
-edumoth
 
 edumoth$edumoth <- as.character(edumoth$edumoth)
 names(edumoth)[1] <- "val"
-edumoth$val <- "Mother's education"
+edumoth$var <- "Mother's education"
+#edumoth
 t1 <-rbind(t1, edumoth)
 rm(edumoth)
 
@@ -186,8 +116,9 @@ lbw$uci <- lbw$rr*exp(1.96*lbw$se)
 lbw$z <- z_rr(lbw$rr, lbw$se)
 lbw$p <- p_rr(lbw$z)
 
-names(lbw)[1] <- "var"
-lbw$var <- as.character(lbw$var)
+lbw$var <- "Birthweight"
+names(lbw)[1] <- "val"
+lbw$val <- as.character(lbw$val)
 t1 <-rbind(t1, lbw)
 rm(lbw)
 
@@ -250,5 +181,8 @@ t1$p <- round(t1$p, 3)
 t1 <- t1[c(1,2,3,4,5,6,7,9,8)]
 t1$var[t1$var=="sex" & t1$val=="Male"] <- "Sex"
 t1$var[t1$var=="sex" & t1$val=="Female"] <- ""
-t1$var[t1$var=="neo" & t1$val=="No neonatal rotavirus"] <- "Sex"
+t1$var[t1$var=="neo" & t1$val=="No neonatal rotavirus"] <- "Neonatal rotaviral diarrhoea"
 t1$var[t1$var=="sex" & t1$val=="Female"] <- ""
+t1
+tab <- xtable(t1, caption = "Characteristics of study participants", label = "epic")
+digits(tab)[c(4,5,6)] <- 0

@@ -29,12 +29,69 @@
         {}}
 \makeatother
 \begin{document}
-\SweaveOpts{concordance=TRUE}
 \section{Methods}
+<<setup, results='asis', echo=FALSE>>=
+require(splines)
+library(survival)
+library(foreign)
+library(plyr)
+library(xtable)
+# functions ####
+perc <- function(d,n){
+  round((d/n)*100,2)
+}
 
+rate_per_k <- function(x,y){
+  (x/y)*1000
+}
+
+or_wrapper<-function(x){
+  cbind(OR=1/exp(coef(x)),exp(confint(x)))
+}
+
+se_log_rr <- function(x,y){
+  sqrt((1/x)+(1/y))
+}
+
+z_rr <- function(x,y){
+  log(x)/y
+}
+
+p_rr <- function(x){
+  2*pnorm(-abs(x))
+}
+
+decimal2<-function(x){paste(x,".00",sep="")} # decimal replacer for character strings, 2 decimal places
+
+decimal1<-function(x){paste(x,"0",sep="")} # decimal replacer for character strings, 1 decimal place
+
+simpleCap<-function(x){
+  s<-as.character(x)
+  s<-paste(toupper(substring(s,1,1)),substring(s,2),sep="")
+  #  s<-as.factor(s)
+}
+
+# reading data in ####
+
+# first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
+first<-read.dta("/home/simon/Documents/MSc/Modules/ASME/firstrv.dta")
+# can start with very basics. How many children, how many events. Age and sex. 
+first$lbw <- as.character(first$lbw)
+#all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
+all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
+# get max number of episodes by id and time at risk
+all$dar <- as.numeric(all$endfoll - all$startfoll,format="days")
+max.episodes <- ddply(all, .(id), summarise, max=max(numprevepisode, na.rm=TRUE), tdar=sum(dar, na.rm=TRUE))
+
+# Combine max episodes and tdar into first dataframe
+first <- merge(first, max.episodes, all.x=TRUE, by.x="id", by.y="id")
+first$case <- 0
+first$case[first$exittype == "RV diarrhoea"] <- 1
+@
 \section{Results}
-<<epic table, results=verbatim, echo=FALSE>>=
-source("/home/simon/Documents/MSc/Modules/ASME/asme/epictable.R")
+<<epic_table, results='asis', echo=FALSE>>=
+source("epictable.R")
+print(tab, include.rownames=FALSE, booktabs=TRUE, floating.environment='sidewaystable')
 @
 
 
