@@ -1,0 +1,41 @@
+\documentclass[11pt,a4paper,twoside]{article}
+\title{SME assignment}
+\author{Student number: 106936}
+\usepackage{booktabs}
+\usepackage{xspace}
+\usepackage{amsmath}%
+\usepackage{amsfonts}
+\usepackage{amssymb}
+%\usepackage{graphicx}
+\usepackage[bottom=2cm,margin=2.5cm]{geometry}
+\usepackage{lmodern}
+\usepackage{rotating}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\fancyhead{}
+\fancyfoot{}
+\setlength{\headheight}{15.2pt}
+%\setlength{\footskip=20pt}
+\pagestyle{fancy}
+\lhead[\thepage]{Student 106936}
+\chead[ SME assignment]{SME assignment}
+\rhead[ Student 106936]{\thepage}
+\usepackage[compact]{titlesec}
+\titleformat*{\section}{\large\bfseries}
+\makeatletter
+\newcommand\gobblepars{%
+    \@ifnextchar\par%
+        {\expandafter\gobblepars\@gobble}%
+        {}}
+\makeatother
+\begin{document}
+\SweaveOpts{concordance=TRUE}
+\section{Methods}
+
+\section{Results}
+<<epic table, results=verbatim, echo=FALSE>>=
+source("/home/simon/Documents/MSc/Modules/ASME/asme/epictable.R")
+@
+
+
+\end{document}
