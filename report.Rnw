@@ -29,8 +29,9 @@
         {}}
 \makeatother
 \begin{document}
+%\SweaveOpts{concordance=TRUE}
 \section{Methods}
-<<setup, results='asis', echo=FALSE>>=
+<<setup, results='asis', echo=FALSE, message=FALSE>>=
 require(splines)
 library(survival)
 library(foreign)
@@ -73,12 +74,12 @@ simpleCap<-function(x){
 
 # reading data in ####
 
-# first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
-first<-read.dta("/home/simon/Documents/MSc/Modules/ASME/firstrv.dta")
+first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
+#first<-read.dta("/home/simon/Documents/MSc/Modules/ASME/firstrv.dta")
 # can start with very basics. How many children, how many events. Age and sex. 
 first$lbw <- as.character(first$lbw)
-#all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
-all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
+all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
+#all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
 # get max number of episodes by id and time at risk
 all$dar <- as.numeric(all$endfoll - all$startfoll,format="days")
 max.episodes <- ddply(all, .(id), summarise, max=max(numprevepisode, na.rm=TRUE), tdar=sum(dar, na.rm=TRUE))

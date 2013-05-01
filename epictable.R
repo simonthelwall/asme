@@ -13,7 +13,9 @@ sex$lci <- sex$rr/exp(1.96*sex$se)
 sex$uci <- sex$rr*exp(1.96*sex$se)
 sex$z <- z_rr(sex$rr, sex$se)
 sex$p <- p_rr(sex$z)
-sex
+sex$var <-"Sex"
+names(sex)[1] <- "val"
+#sex
 
 first$male <- 0
 first$male[first$sex=="M"] <- 1
@@ -29,7 +31,7 @@ neo$lci <- neo$rr/exp(1.96*neo$se)
 neo$uci <- neo$rr*exp(1.96*neo$se)
 neo$z <- z_rr(neo$rr, neo$se)
 neo$p <- p_rr(neo$z)
-neo
+#neo
 neo$var <-"neo"
 names(neo)[1] <- "val"
 t1 <- rbind(sex,neo)
@@ -75,7 +77,7 @@ hhsize$lci <- hhsize$rr/exp(1.96*hhsize$se)
 hhsize$uci <- hhsize$rr*exp(1.96*hhsize$se)
 hhsize$z <- z_rr(hhsize$rr, hhsize$se)
 hhsize$p <- p_rr(hhsize$z)
-hhsize
+#hhsize
 
 names(hhsize)[1] <- "val"
 hhsize$var <- "Household size"
@@ -137,7 +139,6 @@ animalown$p <- p_rr(animalown$z)
 animalown$var <- "Animal ownership"
 names(animalown)[1] <- "val"
 animalown$val <- as.character(animalown$val)
-animalown$val[animalown$var == ""]
 t1 <-rbind(t1, animalown)
 rm(animalown)
 
@@ -154,7 +155,7 @@ beediwork$z <- z_rr(beediwork$rr, beediwork$se)
 beediwork$p <- p_rr(beediwork$z)
 names(beediwork)[1] <- "val"
 beediwork$var <- "Beedi made in household"
-beediwork
+#beediwork
 t1 <- rbind(t1, beediwork)
 rm(beediwork)
 
