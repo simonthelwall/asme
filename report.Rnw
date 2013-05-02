@@ -72,6 +72,15 @@ simpleCap<-function(x){
   #  s<-as.factor(s)
 }
 
+extractCI <- function(m){
+  beta <- round(coef(m)["coef"], 3)
+  se <- round(coef(m)["se(coef)"], 3)
+  p <- round(coef(m)["Pr(>|z|)"], 3)
+  ci <- round(m$conf.int[c("lower .95", "upper .95")],3)
+  res <- rbind(beta, round(exp(beta),3), ci[1], ci[2], p)
+  res
+}
+
 # reading data in ####
 
 first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
@@ -86,13 +95,18 @@ max.episodes <- ddply(all, .(id), summarise, max=max(numprevepisode, na.rm=TRUE)
 
 # Combine max episodes and tdar into first dataframe
 first <- merge(first, max.episodes, all.x=TRUE, by.x="id", by.y="id")
+first$tyar <- first$tdar/365.25
 first$case <- 0
 first$case[first$exittype == "RV diarrhoea"] <- 1
+# end read in ####
 @
+
 \section{Results}
+A total of \Sexpr{length(first$case)} children were recruited to the study, of these \Sexpr{sum(first$case)} (\Sexpr{round((sum(first$case)/length(first$case)*100), 2)} \%) developed rotaviral diarrhoea. \\
+The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$futime)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.\\ 
 <<epic_table, results='asis', echo=FALSE>>=
-source("epictable.R")
-print(tab, include.rownames=FALSE, booktabs=TRUE, floating.environment='sidewaystable')
+#source("epictable.R")
+#print(tab, include.rownames=FALSE, booktabs=TRUE, floating.environment='sidewaystable')
 @
 
 
