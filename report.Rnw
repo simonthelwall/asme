@@ -46,8 +46,12 @@ rate_per_k <- function(x,y){
   (x/y)*1000
 }
 
-or_wrapper<-function(x){
-  cbind(OR=1/exp(coef(x)),exp(confint(x)))
+srOrWrapper <- function(x){
+  cbind(HR=round(1/exp(coef(x)), 2),
+        se=round(summary(m1)$table[,2], 2), 
+        lci=round((1/exp(coef(x)))/exp(1.96*summary(m1)$table[,2]), 2),
+        uci=round((1/exp(coef(x)))*exp(1.96*summary(m1)$table[,2]), 2),
+        p=round(summary(m1)$table[,4], 4))
 }
 
 se_log_rr <- function(x,y){
@@ -96,8 +100,12 @@ max.episodes <- ddply(all, .(id), summarise, max=max(numprevepisode, na.rm=TRUE)
 # Combine max episodes and tdar into first dataframe
 first <- merge(first, max.episodes, all.x=TRUE, by.x="id", by.y="id")
 first$tyar <- first$tdar/365.25
+first$doe2 <- as.numeric(first$doe)
+first$dexit <-as.numeric(first$exitdate)
+first$futime <- first$dexit - first$doe2
 first$case <- 0
 first$case[first$exittype == "RV diarrhoea"] <- 1
+
 # end read in ####
 @
 
