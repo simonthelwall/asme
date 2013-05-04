@@ -237,4 +237,56 @@ month.m <- survreg(Surv(f.expanded2$tyar,f.expanded2$case)~factor(m), data=f.exp
 month.ci <- srOrWrapper(month.m)
 month.ci # difficult to interpret. Everything is protective vs January? could make sense. 
 #What if set baseline to low risk month, then order factor? Would be easier to interpret.
-lrtestSurv(month.m, season.m)
+lrtestSurv(month.m, season.m) # not great evidence for superiority of monthly model. Stick to seasonal model as fewer parameters. 
+
+# So, overall probably want to include age and season as fixed effects. 
+#This means dual split, probably first by season then by age. 
+#Then fit maximal model. 
+#Then look for interactions, if appropriate.
+first$doe2 <- as.numeric(first$doe)
+first$dexit <-as.numeric(first$exitdate)
+first$futime <- first$dexit - first$doe2
+head(first)
+f.expanded$futime<-NULL
+f.expanded$age.entry<-NULL
+f.expanded$age.exit<-NULL
+f.expanded <- survSplit(first, cut=c(12021,12142,12386,12508,12752,12873), 
+                         start="doe2", end="dexit", event="case", id="id", 
+                         episode="season", zero="11688" )
+head(f.expanded)
+f.expanded$season2[f.expanded$season==0] <- "Not winter"
+f.expanded$season2[f.expanded$season==1] <- "Winter"
+f.expanded$season2[f.expanded$season==2] <- "Not winter"
+f.expanded$season2[f.expanded$season==3] <- "Winter"
+f.expanded$season2[f.expanded$season==4] <- "Not winter"
+f.expanded$season2[f.expanded$season==5] <- "Winter"
+f.expanded$season2[f.expanded$season==6] <- "Not winter"
+f.expanded$age.entry <- round(as.numeric(f.expanded$doe - f.expanded$dob, format="days")/28, 2)
+range(f.expanded$age.entry)
+f.expanded$age.exit <- round(as.numeric(f.expanded$exitdate - f.expanded$dob, format="days")/28, 2)
+range(f.expanded$age.exit)
+head(f.expanded)
+f.expanded[f.expanded$id==6,]
+f.expanded <-survSplit(f.expanded, cut = c(2, 4, 8, 12, 16, 24), 
+                       end = "age.exit", event = "case",
+                       start = "age.entry", zero = "dob", id = "id", episode = "age")
+head(f.expanded)
+length(f.expanded$id)
+sum(f.expanded$case)
+f.expanded[f.expanded$id==6,]
+f.expanded$age.m <- 0
+f.expanded$age.m[f.expanded$age==0] <- "0-2"
+f.expanded$age.m[f.expanded$age==1] <- "2-4"
+f.expanded$age.m[f.expanded$age==2] <- "4-8"
+f.expanded$age.m[f.expanded$age==3] <- "8-12"
+f.expanded$age.m[f.expanded$age==4] <- "12-16"
+f.expanded$age.m[f.expanded$age==5] <- "16-24"
+f.expanded$age.m[f.expanded$age==6] <- "gt24"
+
+f.expanded$fu.time <- f.expanded$dexit - f.expanded$doe2
+m1 <- survreg(Surv(f.expanded$fu.time, f.expanded$case) ~ beediwork + 
+                sex + factor(edumoth) + factor(lbw) + factor(animalown) + factor(neonatalrv) + factor(season2) + factor(age.m), 
+              f.expanded, dist="exponential")
+m1.hr <- srOrWrapper(m1)
+summary(m1)
+m1.hr
