@@ -2,8 +2,12 @@ library(foreign)
 library(survival)
 library(plyr)
 library(ggplot2)
+library(epicalc)
+#"2002-04-07" min
+#"2005-08-05" max
+setwd("/home/simon/Documents/MSc/Modules/ASME/asme")
 #all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
-all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
+all <- read.dta("/home/simon/Documents/MSc/Modules/ASME/allrv.dta")
 all$male <- 0
 all$male[all$sex=="M"] <- 1
 head(all)
@@ -39,6 +43,14 @@ extractCI <- function(m){
 }
 extractCI(m1)
 
+srOrWrapper <- function(x){
+  cbind(HR=round(1/exp(coef(x)), 2),
+        se=round(summary(x)$table[,2], 2), 
+        lci=round((1/exp(coef(x)))/exp(1.96*summary(x)$table[,2]), 2),
+        uci=round((1/exp(coef(x)))*exp(1.96*summary(x)$table[,2]), 2),
+        p=round(summary(x)$table[,4], 4))
+}
+
 # beta beedi=-0.409, se=0.158
 hr <- exp(-0.409)
 ef <- exp(1.96*0.158)
@@ -54,9 +66,6 @@ log(exp(2.587618)/exp(1.96*0.8068068)) # sort of
 exp(log(2.587618)*(1.96*0.8068068)) #close
 exp(log(2.587618)/(1.96*0.8068068)) #close
 exp(log(2.587618)-(1.96*0.8068068)) #no
-data(ovarian)
-summary(survreg(Surv(futime, fustat) ~ rx, ovarian,
-        dist="exponential"))
 
 first$age.entry <- round(as.numeric(first$doe - first$dob, format="days")/28, 2)
 range(first$age.entry)
@@ -156,6 +165,8 @@ mean(cases2$cases)
 qplot(month, cases, data=cases2, geom="bar", stat="identity") + scale_x_discrete()
 # Splitting winter vs non-winter
 # want to split at start dec, and end march
+#"2002-04-07" min
+#"2005-08-05" max
 as.numeric(as.Date("2002-11-30", format="%Y-%m-%d")) #12021
 as.numeric(as.Date("2003-03-31", format="%Y-%m-%d")) #12142
 as.numeric(as.Date("2003-11-30", format="%Y-%m-%d")) #12386
@@ -177,4 +188,40 @@ first[first$id==6,]
 period2 <- ddply(f.expanded3, .(season), summarise, 
                 cases=sum(case, na.rm=TRUE), tyar = sum(tyar, na.rm=TRUE))
 period2$rate <- round((period2$cases/period2$tyar)*1000,2)
+period2$season2<-""
+period2$season2[period2$season==0] <- "Not winter"
+period2$season2[period2$season==1] <- "Winter"
+period2$season2[period2$season==2] <- "Not winter"
+period2$season2[period2$season==3] <- "Winter"
+period2$season2[period2$season==4] <- "Not winter"
+period2$season2[period2$season==5] <- "Winter"
+period2$season2[period2$season==6] <- "Not winter"
 period2
+p2 <- ddply(period2, .(season2), summarise, cases=sum(cases), tyar=sum(tyar))
+p2$rate <- round((p2$cases/p2$tyar)*1000,2)
+p2
+# regression 
+range(f.expanded3$season)
+f.expanded3$season2[f.expanded3$season==0] <- "Not winter"
+f.expanded3$season2[f.expanded3$season==1] <- "Winter"
+f.expanded3$season2[f.expanded3$season==2] <- "Not winter"
+f.expanded3$season2[f.expanded3$season==3] <- "Winter"
+f.expanded3$season2[f.expanded3$season==4] <- "Not winter"
+f.expanded3$season2[f.expanded3$season==5] <- "Winter"
+f.expanded3$season2[f.expanded3$season==6] <- "Not winter"
+season.m <- survreg(Surv(f.expanded3$tyar,f.expanded3$case)~factor(season2), data=f.expanded3, dist="exponential")
+season.ci<-srOrWrapper(season.m)
+season.ci
+# compare with monthly model
+head(f.expanded2)
+levels(factor(f.expanded2$month))
+cal
+cal2
+length(f.expanded2$case)
+f.expanded2 <- merge(f.expanded2, cal2, by.x="month", by.y="month", all.x=TRUE)
+length(f.expanded2$case)
+month.m <- survreg(Surv(f.expanded2$tyar,f.expanded2$case)~factor(m), data=f.expanded2, dist="exponential")
+month.ci <- srOrWrapper(month.m)
+month.ci # difficult to interpret. Everything is protective vs January? could make sense. 
+#What if set baseline to low risk month, then order factor? Would be easier to interpret.
+save.image()
