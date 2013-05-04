@@ -1,16 +1,22 @@
+library(foreign)
 library(survival)
 library(plyr)
 library(ggplot2)
-all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
-
+#all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
+all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
 all$male <- 0
 all$male[all$sex=="M"] <- 1
 head(all)
 all$case <- 0
 all$case[all$exittype=="RV diarrhoea"] <- 1
-first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
+first<-read.dta("/home/simon/Documents/MSc/Modules/ASME/firstrv.dta")
+#first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
 first$case <- 0
 first$case[first$exittype=="RV diarrhoea"] <- 1
+
+first$doe2 <- as.numeric(first$doe)
+first$dexit <-as.numeric(first$exitdate)
+first$futime <- first$dexit - first$doe2
 
 # Does recoding mother's education make much of a difference?
 chisq.test(first$edumoth,first$case)
@@ -20,10 +26,6 @@ table(first$ed2,first$case, dnn=c("ed2", "case"))
 103/(205+103)
 57/(82+57)
 chisq.test(first$ed2,first$case)
-
-first$doe2 <- as.numeric(first$doe)
-first$dexit <-as.numeric(first$exitdate)
-first$futime <- first$dexit - first$doe2
 
 m1 <- survreg(Surv(first$futime, first$case) ~ beediwork, 
               first, dist="exponential")
@@ -138,3 +140,41 @@ period<-merge(period, cal2, by.x="month", by.y="month",all.x=TRUE)
 length(period$month)
 head(period)
 qplot(m, cases, data=period, geom="bar", stat="identity") + scale_x_discrete()
+p <- ddply(period, .(m), summarise, cases=sum(cases), tyar=sum(tyar))
+p$rate <- round((p$cases/p$tyar)*1000,2)
+p
+qplot(m, rate, data=p, geom="bar", stat="identity") + scale_x_discrete()
+
+head(first)
+cases <- subset(first, case==1)
+class(cases$exitdate)
+cases$month <- as.numeric(format(cases$exitdate, "%m"))
+head(cases)
+cases2 <- ddply(cases, .(month), summarise, cases=sum(case))
+head(cases2)
+mean(cases2$cases)
+qplot(month, cases, data=cases2, geom="bar", stat="identity") + scale_x_discrete()
+# Splitting winter vs non-winter
+# want to split at start dec, and end march
+as.numeric(as.Date("2002-11-30", format="%Y-%m-%d")) #12021
+as.numeric(as.Date("2003-03-31", format="%Y-%m-%d")) #12142
+as.numeric(as.Date("2003-11-30", format="%Y-%m-%d")) #12386
+as.numeric(as.Date("2004-03-31", format="%Y-%m-%d")) #12508
+as.numeric(as.Date("2004-11-30", format="%Y-%m-%d")) #12752
+as.numeric(as.Date("2005-03-31", format="%Y-%m-%d")) #12873
+
+f.expanded3 <- survSplit(first, cut=c(12021,12142,12386,12508,12752,12873), 
+                         start="doe2", end="dexit", event="case", id="id", 
+                         episode="season", zero="11688" )
+head(f.expanded3)
+levels(factor(f.expanded3$season))
+f.expanded3$futime <- NULL
+f.expanded3$tdar <- f.expanded3$dexit-f.expanded3$doe2
+f.expanded3$tyar <- f.expanded3$tdar/365.25
+f.expanded3[f.expanded3$id==6,]
+first[first$id==6,]
+
+period2 <- ddply(f.expanded3, .(season), summarise, 
+                cases=sum(case, na.rm=TRUE), tyar = sum(tyar, na.rm=TRUE))
+period2$rate <- round((period2$cases/period2$tyar)*1000,2)
+period2
