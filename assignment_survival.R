@@ -41,7 +41,7 @@ extractCI <- function(m){
   res <- rbind(beta, round(exp(beta),3), ci[1], ci[2], p)
   res
 }
-extractCI(m1)
+#extractCI(m1)
 
 srOrWrapper <- function(x){
   cbind(HR=round(1/exp(coef(x)), 2),
@@ -51,12 +51,25 @@ srOrWrapper <- function(x){
         p=round(summary(x)$table[,4], 4))
 }
 
+lrtestSurv <- function(x,y){
+  logLx <- x$loglik[2]
+  logLy <- y$loglik[2]
+  df <- abs(y$df-x$df)
+  chi2 <- abs(2*(logLx - logLy))
+  p <- pchisq(chi2, df, lower.tail=FALSE)
+  result <- list(chi2=chi2, df=df, p=p)
+  return(result)
+}
+
+summary(month.m)
+month.m$loglik[2]
+
 # beta beedi=-0.409, se=0.158
-hr <- exp(-0.409)
-ef <- exp(1.96*0.158)
-lci <- hr/ef
-uci <- hr*ef
-paste(round(hr, 3), " (", round(lci, 3), " - ", round(uci, 3), ")", sep="")
+# hr <- exp(-0.409)
+# ef <- exp(1.96*0.158)
+# lci <- hr/ef
+# uci <- hr*ef
+# paste(round(hr, 3), " (", round(lci, 3), " - ", round(uci, 3), ")", sep="")
 #2 hr:2.587618 se:.8068068 ci: 1.404428 4.76761
 2.587618/exp(1.96*0.8068068) # no
 2.587618-exp((1.96*0.8068068)) #no
@@ -224,4 +237,4 @@ month.m <- survreg(Surv(f.expanded2$tyar,f.expanded2$case)~factor(m), data=f.exp
 month.ci <- srOrWrapper(month.m)
 month.ci # difficult to interpret. Everything is protective vs January? could make sense. 
 #What if set baseline to low risk month, then order factor? Would be easier to interpret.
-save.image()
+lrtestSurv(month.m, season.m)
