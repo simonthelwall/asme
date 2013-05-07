@@ -16,10 +16,66 @@ sex$p <- p_rr(sex$z)
 sex$var <-"Sex"
 names(sex)[1] <- "val"
 #sex
-
 first$male <- 0
 first$male[first$sex=="M"] <- 1
 
+
+# Age ####
+first$age.entry <- round(as.numeric(first$doe - first$dob, format="days")/28, 2)
+first$age.exit <- round(as.numeric(first$exitdate - first$dob, format="days")/28, 2)
+f.expanded <-survSplit(first, cut = c(2, 4, 8, 12, 16, 24), 
+                       end = "age.exit", event = "case",
+                       start = "age.entry", zero = "dob", id = "id", episode = "age")
+f.expanded$obs <- 1
+f.expanded$obs[duplicated(f.expanded$id)==TRUE]<-0
+f.expanded[f.expanded$id==6,]
+f.expanded$futime2 <- f.expanded$dexit-f.expanded$doe2 # days
+age <- ddply(f.expanded, .(age), summarise, pdar=sum(futime2, na.rm=TRUE), cases=sum(case, na.rm=TRUE))
+age$pyar <- age$pdar/365.25
+age$rate <- age$cases/age$pyar
+age$rate <- age$rate*1000
+#cut = c(2, 4, 8, 12, 16, 24)
+age$age[age$age == 0] <- "0-2 months"
+age$age[age$age == 1] <- "2-4 months"
+age$age[age$age == 2] <- "4-8 months"
+age$age[age$age == 3] <- "8-12 months"
+age$age[age$age == 4] <- "12-16 months"
+age$age[age$age == 5] <- "16-24 months"
+age$age[age$age == 6] <- ">24 months"
+age_cases <- subset(age, select = c(age, cases))
+rm(f.expanded)
+all$case <- 0
+all$case[all$exittype=="RV diarrhoea"] <- 1
+all$age.entry <- round((as.numeric(all$startfoll, format="days") - as.numeric(all$dob, format="days"))/28, 2)
+all$age.exit <- round((as.numeric(all$endfoll, format="days") - as.numeric(all$dob, format="days"))/28, 2)
+all.expanded <-survSplit(all, cut = c(2, 4, 8, 12, 16, 24), 
+                       end = "age.exit", event = "case",
+                       start = "age.entry", zero = "dob", id = "id", episode = "age")
+all.expanded$doe2 <- all.expanded$startfoll + all.expanded$age.entry*28
+all.expanded$dexit <- all.expanded$startfoll + all.expanded$age.exit*28
+all.expanded$futime <- as.numeric(all.expanded$dexit - all.expanded$doe2, format="days") #
+head(all.expanded)
+age <- ddply(all.expanded, .(age), summarise, pdar=sum(futime, na.rm=TRUE), cases=sum(case, na.rm=TRUE))
+age$pyar <- age$pdar/365.25
+age$rate <- age$cases/age$pyar
+age$rate <- age$rate*1000
+#cut = c(2, 4, 8, 12, 16, 24)
+age$age[age$age == 0] <- "0-2 months"
+age$age[age$age == 1] <- "2-4 months"
+age$age[age$age == 2] <- "4-8 months"
+age$age[age$age == 3] <- "8-12 months"
+age$age[age$age == 4] <- "12-16 months"
+age$age[age$age == 5] <- "16-24 months"
+age$age[age$age == 6] <- ">24 months"
+age$pdar <- NULL
+names(age) <- c("age", "inc.cases", "pyar", "rate")
+age <- merge(age, age_cases, by.x="age", by.y = "age", all.x=TRUE)
+age$age <- factor(age$age, 
+                     levels = c("0-2 months", "2-4 months", "4-8 months", "8-12 months", "12-16 months", "16-24 months", ">24 months"), 
+                     ordered = TRUE)
+age <- age[order(age$age),]
+age <- age[c(1,5,2,3,4)]
+age
 # neonatal rv ####
 neo <- ddply(first, .(neonatalrv) , summarise, 
              n=sum(obs), cases=sum(case), episodes=sum(max), tar=sum(tdar)/365.25)
