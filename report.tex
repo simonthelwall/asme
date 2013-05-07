@@ -1,0 +1,133 @@
+\documentclass[11pt,a4paper,twoside]{article}\usepackage{graphicx, color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.2, 0.2, 0.2}
+\newcommand{\hlnumber}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlfunctioncall}[1]{\textcolor[rgb]{0.501960784313725,0,0.329411764705882}{\textbf{#1}}}%
+\newcommand{\hlstring}[1]{\textcolor[rgb]{0.6,0.6,1}{#1}}%
+\newcommand{\hlkeyword}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlargument}[1]{\textcolor[rgb]{0.690196078431373,0.250980392156863,0.0196078431372549}{#1}}%
+\newcommand{\hlcomment}[1]{\textcolor[rgb]{0.180392156862745,0.6,0.341176470588235}{#1}}%
+\newcommand{\hlroxygencomment}[1]{\textcolor[rgb]{0.43921568627451,0.47843137254902,0.701960784313725}{#1}}%
+\newcommand{\hlformalargs}[1]{\textcolor[rgb]{0.690196078431373,0.250980392156863,0.0196078431372549}{#1}}%
+\newcommand{\hleqformalargs}[1]{\textcolor[rgb]{0.690196078431373,0.250980392156863,0.0196078431372549}{#1}}%
+\newcommand{\hlassignement}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlpackage}[1]{\textcolor[rgb]{0.588235294117647,0.709803921568627,0.145098039215686}{#1}}%
+\newcommand{\hlslot}[1]{\textit{#1}}%
+\newcommand{\hlsymbol}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlprompt}[1]{\textcolor[rgb]{0.2,0.2,0.2}{#1}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
+\title{SME assignment}
+\author{Student number: xxxxxx}
+\usepackage{booktabs}
+\usepackage{xspace}
+\usepackage{amsmath}%
+\usepackage{amsfonts}
+\usepackage{amssymb}
+%\usepackage{graphicx}
+\usepackage[bottom=2cm,margin=2.5cm]{geometry}
+\usepackage{lmodern}
+\usepackage{rotating}
+\usepackage[T1]{fontenc}
+\usepackage{fancyhdr}
+\fancyhead{}
+\fancyfoot{}
+\setlength{\headheight}{15.2pt}
+%\setlength{\footskip=20pt}
+\pagestyle{fancy}
+\lhead[\thepage]{Student xxxxxx}
+\chead[ SME assignment]{SME assignment}
+\rhead[ Student xxxxxx]{\thepage}
+\usepackage[compact]{titlesec}
+\titleformat*{\section}{\large\bfseries}
+\makeatletter
+\newcommand\gobblepars{%
+    \@ifnextchar\par%
+        {\expandafter\gobblepars\@gobble}%
+        {}}
+\makeatother
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\begin{document}
+%\SweaveOpts{concordance=TRUE}
+\section{Methods}
+\begin{kframe}
+
+
+{\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'foreign' was built under R version 2.15.3}}\end{kframe}
+
+
+\section{Results}
+A total of 447 children were recruited to the study, of these 160 (35.79 \%) developed rotaviral diarrhoea. \\
+The incidence rate for any case of rotaviral diarrhoea was 290.48 per thousand person-years and the incidence rate for all cases was 310.83 per thousand person-years.\\ 
+% latex table generated in R 2.15.2 by xtable 1.7-1 package
+% Tue May 07 20:49:20 2013
+\begin{sidewaystable}[ht]
+\centering
+\begin{tabular}{llrrrrrlr}
+  \toprule
+var & val & n & cases & episodes & tar & rate & rateratio & p \\ 
+  \midrule
+Sex & Male & 225 & 91 & 138 & 381.35 & 361.87 & 1.40 (1.08 - 1.81) & 0.01 \\ 
+  Sex & Female & 222 & 69 & 98 & 377.92 & 259.32 & 1.00 (0.77 - 1.30) & 1.00 \\ 
+  Neonatal rotaviral diarrhoea & No neonatal rotavirus & 430 & 152 & 225 & 731.51 & 307.58 & 1.00 (0.55 - 1.83) & 1.00 \\ 
+  neo & Neonatal rotavirus & 17 & 8 & 11 & 27.76 & 396.31 & 1.29 (0.70 - 2.36) & 0.41 \\ 
+  Mother's education & None & 139 & 57 & 81 & 219.99 & 368.20 & 1.35 (1.00 - 1.82) & 0.05 \\ 
+  Mother's education & Primary \& middle school & 125 & 44 & 67 & 217.41 & 308.18 & 1.13 (0.82 - 1.55) & 0.46 \\ 
+  Mother's education & Higher secondary \& college & 183 & 59 & 88 & 321.87 & 273.40 & 1.00 (NA - NA) &  \\ 
+  Household size & $<$=5 & 299 & 105 & 151 & 503.81 & 299.72 & 1.00 (0.77 - 1.30) & 1.00 \\ 
+  Household size & $>$5 & 148 & 55 & 85 & 255.46 & 332.73 & 1.11 (0.85 - 1.45) & 0.44 \\ 
+  Socioeconomic status & Class I & 277 & 103 & 153 & 462.41 & 330.88 & 1.18 (0.91 - 1.55) & 0.22 \\ 
+  Socioeconomic status & Class II & 170 & 57 & 83 & 296.86 & 279.59 & 1.00 (0.77 - 1.31) & 1.00 \\ 
+  Birthweight & $<$2.5 & 51 & 20 & 29 & 88.42 & 327.98 & 1.07 (0.72 - 1.57) & 0.75 \\ 
+  Birthweight & $>$=2.5 & 386 & 137 & 201 & 652.74 & 307.93 & 1.00 (NA - NA) &  \\ 
+  Birthweight & Missing & 10 & 3 & 6 & 18.11 & 331.31 & 1.08 (0.48 - 2.42) & 0.86 \\ 
+  Animal ownership & No & 389 & 143 & 209 & 654.58 & 319.29 & 1.00 (0.67 - 1.49) & 1.00 \\ 
+  Animal ownership & Yes & 58 & 17 & 27 & 104.68 & 257.93 & 0.81 (0.54 - 1.21) & 0.30 \\ 
+  Beedi made in household & No & 244 & 75 & 107 & 413.41 & 258.82 & 1.00 (0.77 - 1.29) & 1.00 \\ 
+  Beedi made in household & Yes & 203 & 85 & 129 & 345.86 & 372.98 & 1.44 (1.12 - 1.86) & 0.00 \\ 
+   \bottomrule
+\end{tabular}
+\caption{Characteristics of study participants} 
+\label{epic}
+\end{sidewaystable}
+
+
+
+
+\end{document}

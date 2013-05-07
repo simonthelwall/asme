@@ -1,6 +1,6 @@
 \documentclass[11pt,a4paper,twoside]{article}
 \title{SME assignment}
-\author{Student number: 106936}
+\author{Student number: xxxxxx}
 \usepackage{booktabs}
 \usepackage{xspace}
 \usepackage{amsmath}%
@@ -17,9 +17,9 @@
 \setlength{\headheight}{15.2pt}
 %\setlength{\footskip=20pt}
 \pagestyle{fancy}
-\lhead[\thepage]{Student 106936}
+\lhead[\thepage]{Student xxxxxx}
 \chead[ SME assignment]{SME assignment}
-\rhead[ Student 106936]{\thepage}
+\rhead[ Student xxxxxx]{\thepage}
 \usepackage[compact]{titlesec}
 \titleformat*{\section}{\large\bfseries}
 \makeatletter
@@ -87,11 +87,13 @@ extractCI <- function(m){
 
 # reading data in ####
 
-first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
+first <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\firstrv.dta")
+#first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
 #first<-read.dta("/home/simon/Documents/MSc/Modules/ASME/firstrv.dta")
 # can start with very basics. How many children, how many events. Age and sex. 
 first$lbw <- as.character(first$lbw)
-all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
+all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
+#all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
 #all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
 # get max number of episodes by id and time at risk
 all$dar <- as.numeric(all$endfoll - all$startfoll,format="days")
@@ -113,8 +115,8 @@ first$case[first$exittype == "RV diarrhoea"] <- 1
 A total of \Sexpr{length(first$case)} children were recruited to the study, of these \Sexpr{sum(first$case)} (\Sexpr{round((sum(first$case)/length(first$case)*100), 2)} \%) developed rotaviral diarrhoea. \\
 The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$futime)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.\\ 
 <<epic_table, results='asis', echo=FALSE>>=
-#source("epictable.R")
-#print(tab, include.rownames=FALSE, booktabs=TRUE, floating.environment='sidewaystable')
+source("epictable.R")
+print(tab, include.rownames=FALSE, booktabs=TRUE, floating.environment='sidewaystable')
 @
 
 
