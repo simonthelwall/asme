@@ -48,10 +48,10 @@ rate_per_k <- function(x,y){
 
 srOrWrapper <- function(x){
   cbind(HR=round(1/exp(coef(x)), 2),
-        se=round(summary(m1)$table[,2], 2), 
-        lci=round((1/exp(coef(x)))/exp(1.96*summary(m1)$table[,2]), 2),
-        uci=round((1/exp(coef(x)))*exp(1.96*summary(m1)$table[,2]), 2),
-        p=round(summary(m1)$table[,4], 4))
+        se=round(summary(x)$table[,2], 2), 
+        lci=round((1/exp(coef(x)))/exp(1.96*summary(x)$table[,2]), 2),
+        uci=round((1/exp(coef(x)))*exp(1.96*summary(x)$table[,2]), 2),
+        p=round(summary(x)$table[,4], 4))
 }
 
 se_log_rr <- function(x,y){
