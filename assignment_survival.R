@@ -176,10 +176,28 @@ cases2 <- ddply(cases, .(month), summarise, cases=sum(case))
 head(cases2)
 mean(cases2$cases)
 qplot(month, cases, data=cases2, geom="bar", stat="identity") + scale_x_discrete()
+
+rate_per_k <- function(x,y){
+  (x/y)*1000
+}
+
+se_log_rr <- function(x,y){
+  sqrt((1/x)+(1/y))
+}
+
+z_rr <- function(x,y){
+  log(x)/y
+}
+
+p_rr <- function(x){
+  2*pnorm(-abs(x))
+}
+
 # Splitting winter vs non-winter
 # want to split at start dec, and end march
 #"2002-04-07" min
 #"2005-08-05" max
+
 as.numeric(as.Date("2002-11-30", format="%Y-%m-%d")) #12021
 as.numeric(as.Date("2003-03-31", format="%Y-%m-%d")) #12142
 as.numeric(as.Date("2003-11-30", format="%Y-%m-%d")) #12386
@@ -202,14 +220,40 @@ period2 <- ddply(f.expanded3, .(season), summarise,
                 cases=sum(case, na.rm=TRUE), tyar = sum(tyar, na.rm=TRUE))
 period2$rate <- round((period2$cases/period2$tyar)*1000,2)
 period2$season2<-""
-period2$season2[period2$season==0] <- "Not winter"
-period2$season2[period2$season==1] <- "Winter"
-period2$season2[period2$season==2] <- "Not winter"
-period2$season2[period2$season==3] <- "Winter"
-period2$season2[period2$season==4] <- "Not winter"
-period2$season2[period2$season==5] <- "Winter"
-period2$season2[period2$season==6] <- "Not winter"
+period2$season2[period2$season==0] <- "May - Nov 2002"
+period2$season2[period2$season==1] <- "Dec 2002 - Apr 2003"
+period2$season2[period2$season==2] <- "May - Nov 2003"
+period2$season2[period2$season==3] <- "Dec 2003 - Apr 2004"
+period2$season2[period2$season==4] <- "May - Nov 2004"
+period2$season2[period2$season==5] <- "Dec 2004- Apr 2005"
+period2$season2[period2$season==6] <- "May - Nov 2005"
 period2
+period2$rr <- NA
+period2$rr[period2$season==1] <- period2$rate[period2$season==1]/period2$rate[period2$season==0]
+period2$rr[period2$season==2] <- period2$rate[period2$season==2]/period2$rate[period2$season==0]
+period2$rr[period2$season==3] <- period2$rate[period2$season==3]/period2$rate[period2$season==0]
+period2$rr[period2$season==4] <- period2$rate[period2$season==4]/period2$rate[period2$season==0]
+period2$rr[period2$season==5] <- period2$rate[period2$season==5]/period2$rate[period2$season==0]
+period2$rr[period2$season==6] <- period2$rate[period2$season==6]/period2$rate[period2$season==0]
+period2$se <- NA
+period2$se[period2$season==1] <- period2$cases[period2$season==1]/period2$cases[period2$season==0]
+period2$se[period2$season==2] <- period2$cases[period2$season==2]/period2$cases[period2$season==0]
+period2$se[period2$season==3] <- period2$cases[period2$season==3]/period2$cases[period2$season==0]
+period2$se[period2$season==4] <- period2$cases[period2$season==4]/period2$cases[period2$season==0]
+period2$se[period2$season==5] <- period2$cases[period2$season==5]/period2$cases[period2$season==0]
+period2$se[period2$season==6] <- period2$cases[period2$season==6]/period2$cases[period2$season==0]
+period2$lci <- period2$rr/exp(1.96*period2$se)
+period2$uci <- period2$rr*exp(1.96*period2$se)
+period2$z <- z_rr(period2$rr, period2$se)
+period2$p <- p_rr(period2$z)
+period2 # not sure about the CI here.
+
+season.m <- survreg(Surv(f.expanded3$tdar,f.expanded3$case)~factor(season),
+                    data=f.expanded3, dist="exponential")
+summary(season.m)
+season.out <- srOrWrapper(season.m)
+season.out
+
 p2 <- ddply(period2, .(season2), summarise, cases=sum(cases), tyar=sum(tyar))
 p2$rate <- round((p2$cases/p2$tyar)*1000,2)
 p2
