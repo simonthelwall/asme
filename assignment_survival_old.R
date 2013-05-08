@@ -2,8 +2,8 @@ library(foreign)
 library(survival)
 library(plyr)
 library(ggplot2)
-all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
-#all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
+#all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
+all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
 
 all$male <- 0
 all$male[all$sex=="M"] <- 1
