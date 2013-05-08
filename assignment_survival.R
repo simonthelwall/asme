@@ -269,7 +269,7 @@ period2 <- period2[c(9,4,1,2,3,5,6,7,8)]
 names(period2)[2] <- "val"
 period2
 
-# formatting age for epic table
+# formatting age for epic table - actually should keep 'all' data for multivariable model. Restrict univariate to first episodes? 
 first$age.entry <- round((as.numeric(first$doe, format="days") - as.numeric(first$dob, format="days"))/28,2)
 first$age.exit <- round((as.numeric(first$exitdate, format="days") - as.numeric(first$dob, format="days"))/28,2)
 f.expanded <-survSplit(first, cut = c(2, 4, 8, 12, 16, 24), 

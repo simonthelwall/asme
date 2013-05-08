@@ -95,6 +95,8 @@ all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
 #all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
 #all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
 # get max number of episodes by id and time at risk
+all$case <- 0
+all$case[all$exittype == "RV diarrhoea"] <- 1
 all$dar <- as.numeric(all$endfoll - all$startfoll,format="days")
 max.episodes <- ddply(all, .(id), summarise, max=max(numprevepisode, na.rm=TRUE), tdar=sum(dar, na.rm=TRUE))
 

@@ -32,8 +32,7 @@ f.expanded[f.expanded$id==6,]
 f.expanded$futime2 <- f.expanded$dexit-f.expanded$doe2 # days
 age <- ddply(f.expanded, .(age), summarise, pdar=sum(futime2, na.rm=TRUE), cases=sum(case, na.rm=TRUE))
 age$pyar <- age$pdar/365.25
-age$rate <- age$cases/age$pyar
-age$rate <- age$rate*1000
+age$rate <- (age$cases/age$pyar)*1000
 #cut = c(2, 4, 8, 12, 16, 24)
 age$age[age$age == 0] <- "0-2 months"
 age$age[age$age == 1] <- "2-4 months"
@@ -42,10 +41,8 @@ age$age[age$age == 3] <- "8-12 months"
 age$age[age$age == 4] <- "12-16 months"
 age$age[age$age == 5] <- "16-24 months"
 age$age[age$age == 6] <- ">24 months"
-age_cases <- subset(age, select = c(age, cases))
+age_cases <- subset(age, select = c(age, pyar, cases))
 rm(f.expanded)
-all$case <- 0
-all$case[all$exittype=="RV diarrhoea"] <- 1
 all$age.entry <- round((as.numeric(all$startfoll, format="days") - as.numeric(all$dob, format="days"))/28, 2)
 all$age.exit <- round((as.numeric(all$endfoll, format="days") - as.numeric(all$dob, format="days"))/28, 2)
 all.expanded <-survSplit(all, cut = c(2, 4, 8, 12, 16, 24), 
@@ -55,10 +52,9 @@ all.expanded$doe2 <- all.expanded$startfoll + all.expanded$age.entry*28
 all.expanded$dexit <- all.expanded$startfoll + all.expanded$age.exit*28
 all.expanded$futime <- as.numeric(all.expanded$dexit - all.expanded$doe2, format="days") #
 head(all.expanded)
-age <- ddply(all.expanded, .(age), summarise, pdar=sum(futime, na.rm=TRUE), cases=sum(case, na.rm=TRUE))
-age$pyar <- age$pdar/365.25
-age$rate <- age$cases/age$pyar
-age$rate <- age$rate*1000
+#age <- ddply(all.expanded, .(age), summarise, pdar=sum(futime, na.rm=TRUE), episodes=sum(case, na.rm=TRUE))
+age <- ddply(all.expanded, .(age), summarise, episodes=sum(case, na.rm=TRUE)) # changed mind on how to present age data. Will retain full method for maximal model regression.
+rm(all.expanded)
 #cut = c(2, 4, 8, 12, 16, 24)
 age$age[age$age == 0] <- "0-2 months"
 age$age[age$age == 1] <- "2-4 months"
@@ -67,15 +63,41 @@ age$age[age$age == 3] <- "8-12 months"
 age$age[age$age == 4] <- "12-16 months"
 age$age[age$age == 5] <- "16-24 months"
 age$age[age$age == 6] <- ">24 months"
-age$pdar <- NULL
-names(age) <- c("age", "inc.cases", "pyar", "rate")
+
 age <- merge(age, age_cases, by.x="age", by.y = "age", all.x=TRUE)
+age$rate <- (age$cases/age$pyar)*1000
 age$age <- factor(age$age, 
                      levels = c("0-2 months", "2-4 months", "4-8 months", "8-12 months", "12-16 months", "16-24 months", ">24 months"), 
                      ordered = TRUE)
 age <- age[order(age$age),]
-age <- age[c(1,5,2,3,4)]
-age
+age <- age[c(1,4,2,3,5)]
+age$rr <- NA
+age$rr[age$age == "2-4 months"] <- age$rate[age$age == "2-4 months"]/age$rate[age$age == "0-2 months"]
+age$rr[age$age == "4-8 months"] <- age$rate[age$age == "4-8 months"]/age$rate[age$age == "0-2 months"]
+age$rr[age$age == "8-12 months"] <- age$rate[age$age == "8-12 months"]/age$rate[age$age == "0-2 months"]
+age$rr[age$age == "12-16 months"] <- age$rate[age$age == "12-16 months"]/age$rate[age$age == "0-2 months"]
+age$rr[age$age == "16-24 months"] <- age$rate[age$age == "16-24 months"]/age$rate[age$age == "0-2 months"]
+age$rr[age$age == ">24 months"] <- age$rate[age$age == ">24 months"]/age$rate[age$age == "0-2 months"]
+age$se <- NA
+age$se[age$age == "2-4 months"] <- se_log_rr(age$cases[age$age == "2-4 months"],age$cases[age$age == "0-2 months"])
+age$se[age$age == "4-8 months"] <- se_log_rr(age$cases[age$age == "4-8 months"],age$cases[age$age == "0-2 months"])
+age$se[age$age == "8-12 months"] <- se_log_rr(age$cases[age$age == "8-12 months"],age$cases[age$age == "0-2 months"])
+age$se[age$age == "12-16 months"] <- se_log_rr(age$cases[age$age == "12-16 months"],age$cases[age$age == "0-2 months"])
+age$se[age$age == "16-24 months"] <- se_log_rr(age$cases[age$age == "16-24 months"],age$cases[age$age == "0-2 months"])
+age$se[age$age == ">24 months"] <- se_log_rr(age$cases[age$age == ">24 months"],age$cases[age$age == "0-2 months"])
+age$lci <- age$rr/exp(1.96*age$se)
+age$uci <- age$rr*exp(1.96*age$se)
+age$z <- z_rr(age$rr, age$se)
+age$p <- round(p_rr(age$z),4)
+age$var <- "Age"
+names(age)[1] <- "val"
+names(age)[4] <- "tar"
+age$n <- NA
+age <- age[c(1,13,2,3,4,5,6,7,8,9,10,11,12)]
+t1 <- rbind(sex,age)
+rm(age_cases)
+rm(age)
+
 # neonatal rv ####
 neo <- ddply(first, .(neonatalrv) , summarise, 
              n=sum(obs), cases=sum(case), episodes=sum(max), tar=sum(fu.time)/365.25)
@@ -90,7 +112,7 @@ neo$p <- p_rr(neo$z)
 #neo
 neo$var <-"neo"
 names(neo)[1] <- "val"
-t1 <- rbind(sex,neo)
+t1 <- rbind(t1,neo)
 t1$val <- as.character(t1$val)
 t1$val[t1$val == "No"] <- "No neonatal rotavirus"
 t1$val[t1$val == "Yes"] <- "Neonatal rotavirus"
