@@ -275,14 +275,11 @@ first$age.exit <- round((as.numeric(first$exitdate, format="days") - as.numeric(
 f.expanded <-survSplit(first, cut = c(2, 4, 8, 12, 16, 24), 
                        end = "age.exit", event = "case",
                        start = "age.entry", zero = "dob", id = "id", episode = "age")
-head(f.expanded)
 f.expanded[f.expanded$id==6,]
-
-head(f.expanded)
-length(f.expanded$id)
-sum(f.expanded$case)
+#sum(f.expanded$case)
+#f.expanded <- f.expanded[order(f.expanded$id),]
 f.expanded[f.expanded$id==6,]
-f.expanded$age.m <- 0
+f.expanded$age.m <- ""
 f.expanded$age.m[f.expanded$age==0] <- "0-2"
 f.expanded$age.m[f.expanded$age==1] <- "2-4"
 f.expanded$age.m[f.expanded$age==2] <- "4-8"
@@ -291,12 +288,56 @@ f.expanded$age.m[f.expanded$age==4] <- "12-16"
 f.expanded$age.m[f.expanded$age==5] <- "16-24"
 f.expanded$age.m[f.expanded$age==6] <- "gt24"
 
-f.expanded$fu.time <- f.expanded$dexit - f.expanded$doe2
+f.expanded$doe3 <- f.expanded$doe2+(f.expanded$age.entry*28)
+f.expanded$dexit3 <- f.expanded$dexit+(f.expanded$age.exit*28)
+f.expanded$fu.time <- f.expanded$dexit3 - f.expanded$doe3
 
+age <- ddply(f.expanded, .(age.m), summarise, cases=sum(case), tdar=sum(fu.time))
+age$tyar <- age$tdar/365.25
+age$rate <- rate_per_k(age$cases, age$tyar)
+age$age.m <- factor(age$age.m, levels = c("0-2", "2-4", "4-8", "8-12", "12-16", "16-24", "gt24" ), 
+                    ordered =TRUE)
+age <- age[order(age$age.m),]
+# age regression
 
-p2 <- ddply(period2, .(season2), summarise, cases=sum(cases), tyar=sum(tyar))
-p2$rate <- round((p2$cases/p2$tyar)*1000,2)
-p2
+age.m <- survreg(Surv(f.expanded$fu.time, f.expanded$case)~factor(age), 
+                 data=f.expanded, dist="exp")
+age.out <- srOrWrapper(age.m)
+age$rr <- NA
+age$rr[age$age.m=="2-4"] <- age.out[2,1]
+age$rr[age$age.m=="4-8"] <- age.out[3,1]
+age$rr[age$age.m=="8-12"] <- age.out[4,1]
+age$rr[age$age.m=="12-16"] <- age.out[5,1]
+age$rr[age$age.m=="16-24"] <- age.out[6,1]
+age$rr[age$age.m=="gt24"] <- age.out[7,1]
+age$lci <- NA
+age$lci[age$age.m=="2-4"] <- age.out[2,3]
+age$lci[age$age.m=="4-8"] <- age.out[3,3]
+age$lci[age$age.m=="8-12"] <- age.out[4,3]
+age$lci[age$age.m=="12-16"] <- age.out[5,3]
+age$lci[age$age.m=="16-24"] <- age.out[6,3]
+age$lci[age$age.m=="gt24"] <- age.out[7,3]
+age$uci <- NA
+age$uci[age$age.m=="2-4"] <- age.out[2,4]
+age$uci[age$age.m=="4-8"] <- age.out[3,4]
+age$uci[age$age.m=="8-12"] <- age.out[4,4]
+age$uci[age$age.m=="12-16"] <- age.out[5,4]
+age$uci[age$age.m=="16-24"] <- age.out[6,4]
+age$uci[age$age.m=="gt24"] <- age.out[7,4]
+age$p <- NA
+age$p[age$age.m=="2-4"] <- age.out[2,5]
+age$p[age$age.m=="4-8"] <- age.out[3,5]
+age$p[age$age.m=="8-12"] <- age.out[4,5]
+age$p[age$age.m=="12-16"] <- age.out[5,5]
+age$p[age$age.m=="16-24"] <- age.out[6,5]
+age$p[age$age.m=="gt24"] <- age.out[7,5]
+
+age$var <- "Age"
+age$tdar <- NULL
+age <- age[c(9,1,2,3,4,5,6,7,8)]
+names(age)[2] <- "val"
+age
+
 # regression 
 range(f.expanded3$season)
 f.expanded3$season2[f.expanded3$season==0] <- "Not winter"
