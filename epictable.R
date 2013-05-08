@@ -4,11 +4,11 @@
 # Sex ####
 first$obs <- 1
 sex <- ddply(first, .(sex), summarise, 
-             n=sum(obs), cases=sum(case), episodes=sum(max), tar=sum(tdar)/365.25)
-sex$rate <- rate_per_k(sex$episodes,sex$tar)
+             n=sum(obs), cases=sum(case), episodes=sum(max), tar=sum(fu.time)/365.25)
+sex$rate <- rate_per_k(sex$cases,sex$tar)
 sex$rr[sex$sex=="M"] <- sex$rate[sex$sex == "M"] / sex$rate[sex$sex == "F"]
 sex$rr[sex$sex=="F"] <- sex$rate[sex$sex == "F"] / sex$rate[sex$sex == "F"]
-sex$se <- se_log_rr(sex$episodes[sex$sex=="M"], sex$episodes[sex$sex=="F"])
+sex$se <- se_log_rr(sex$cases[sex$sex=="M"], sex$cases[sex$sex=="F"])
 sex$lci <- sex$rr/exp(1.96*sex$se)
 sex$uci <- sex$rr*exp(1.96*sex$se)
 sex$z <- z_rr(sex$rr, sex$se)
@@ -78,11 +78,11 @@ age <- age[c(1,5,2,3,4)]
 age
 # neonatal rv ####
 neo <- ddply(first, .(neonatalrv) , summarise, 
-             n=sum(obs), cases=sum(case), episodes=sum(max), tar=sum(tdar)/365.25)
-neo$rate <- rate_per_k(neo$episodes,neo$tar)
+             n=sum(obs), cases=sum(case), episodes=sum(max), tar=sum(fu.time)/365.25)
+neo$rate <- rate_per_k(neo$cases,neo$tar)
 neo$rr[neo$neonatalrv == "No"] <- neo$rate[neo$neonatalrv == "No"] / neo$rate[neo$neonatalrv == "No"]
 neo$rr[neo$neonatalrv == "Yes"] <- neo$rate[neo$neonatalrv == "Yes"] / neo$rate[neo$neonatalrv == "No"]
-neo$se <- se_log_rr(neo$episodes[neo$neonatalrv=="Yes"], neo$episodes[neo$neonatalrv=="No"])
+neo$se <- se_log_rr(neo$cases[neo$neonatalrv=="Yes"], neo$cases[neo$neonatalrv=="No"])
 neo$lci <- neo$rr/exp(1.96*neo$se)
 neo$uci <- neo$rr*exp(1.96*neo$se)
 neo$z <- z_rr(neo$rr, neo$se)
@@ -102,14 +102,14 @@ rm(neo)
 
 # mother's education ####
 edumoth <- ddply(first, .(edumoth) , summarise, 
-             n=sum(obs), cases=sum(case), episodes=sum(max), tar=sum(tdar)/365.25)
-edumoth$rate <- rate_per_k(edumoth$episodes,edumoth$tar)
+             n=sum(obs), cases=sum(case), episodes=sum(max), tar=sum(fu.time)/365.25)
+edumoth$rate <- rate_per_k(edumoth$cases,edumoth$tar)
 edumoth$rr[edumoth$edumoth == "Higher secondary & college"] <- edumoth$rate[edumoth$edumoth == "Higher secondary & college"] / edumoth$rate[edumoth$edumoth == "Higher secondary & college"]
 edumoth$rr[edumoth$edumoth == "Primary & middle school"] <- edumoth$rate[edumoth$edumoth == "Primary & middle school"] / edumoth$rate[edumoth$edumoth == "Higher secondary & college"]
 edumoth$rr[edumoth$edumoth == "None"] <- edumoth$rate[edumoth$edumoth == "None"] / edumoth$rate[edumoth$edumoth == "Higher secondary & college"]
 
-edumoth$se[edumoth$edumoth=="Primary & middle school"] <- se_log_rr(edumoth$episodes[edumoth$edumoth=="Primary & middle school"], edumoth$episodes[edumoth$edumoth=="Higher secondary & college"])
-edumoth$se[edumoth$edumoth=="None"] <- se_log_rr(edumoth$episodes[edumoth$edumoth=="None"], edumoth$episodes[edumoth$edumoth=="Higher secondary & college"])
+edumoth$se[edumoth$edumoth=="Primary & middle school"] <- se_log_rr(edumoth$cases[edumoth$edumoth=="Primary & middle school"], edumoth$cases[edumoth$edumoth=="Higher secondary & college"])
+edumoth$se[edumoth$edumoth=="None"] <- se_log_rr(edumoth$cases[edumoth$edumoth=="None"], edumoth$cases[edumoth$edumoth=="Higher secondary & college"])
 edumoth$lci <- edumoth$rr/exp(1.96*edumoth$se)
 edumoth$uci <- edumoth$rr*exp(1.96*edumoth$se)
 edumoth$z <- z_rr(edumoth$rr, edumoth$se)
@@ -124,11 +124,11 @@ rm(edumoth)
 
 # household size ####
 hhsize <- ddply(first, .(hhsize) , summarise, 
-                 n=sum(obs), cases=sum(case), episodes=sum(max), tar=sum(tdar)/365.25)
-hhsize$rate <- rate_per_k(hhsize$episodes,hhsize$tar)
+                 n=sum(obs), cases=sum(case), episodes=sum(max), tar=sum(fu.time)/365.25)
+hhsize$rate <- rate_per_k(hhsize$cases,hhsize$tar)
 hhsize$rr[hhsize$hhsize == "<=5"] <- hhsize$rate[hhsize$hhsize == "<=5"] / hhsize$rate[hhsize$hhsize == "<=5"]
 hhsize$rr[hhsize$hhsize == ">5"] <- hhsize$rate[hhsize$hhsize == ">5"] / hhsize$rate[hhsize$hhsize == "<=5"]
-hhsize$se <- se_log_rr(hhsize$episodes[hhsize$hhsize==">5"], hhsize$episodes[hhsize$hhsize=="<=5"])
+hhsize$se <- se_log_rr(hhsize$cases[hhsize$hhsize==">5"], hhsize$cases[hhsize$hhsize=="<=5"])
 hhsize$lci <- hhsize$rr/exp(1.96*hhsize$se)
 hhsize$uci <- hhsize$rr*exp(1.96*hhsize$se)
 hhsize$z <- z_rr(hhsize$rr, hhsize$se)
@@ -143,11 +143,11 @@ rm(hhsize)
 
 # socioeconomic status ####
 ses <- ddply(first, .(ses) , summarise, 
-                n=sum(obs), cases=sum(case), episodes=sum(max), tar=round(sum(tdar)/365.25,2))
-ses$rate <- rate_per_k(ses$episodes,ses$tar)
+                n=sum(obs), cases=sum(case), episodes=sum(max), tar=round(sum(fu.time)/365.25,2))
+ses$rate <- rate_per_k(ses$cases,ses$tar)
 ses$rr[ses$ses == "Class II"] <- ses$rate[ses$ses == "Class II"] / ses$rate[ses$ses == "Class II"]
 ses$rr[ses$ses == "Class I"] <- ses$rate[ses$ses == "Class I"] / ses$rate[ses$ses == "Class II"]
-ses$se <- se_log_rr(ses$episodes[ses$ses=="Class I"], ses$episodes[ses$ses=="Class II"])
+ses$se <- se_log_rr(ses$cases[ses$ses=="Class I"], ses$cases[ses$ses=="Class II"])
 ses$lci <- ses$rr/exp(1.96*ses$se)
 ses$uci <- ses$rr*exp(1.96*ses$se)
 ses$z <- z_rr(ses$rr, ses$se)
@@ -161,14 +161,14 @@ rm(ses)
 
 # low birth rate ####
 lbw <- ddply(first, .(lbw) , summarise, 
-             n=sum(obs), cases=sum(case), episodes=sum(max), tar=round(sum(tdar)/365.25,2))
+             n=sum(obs), cases=sum(case), episodes=sum(max), tar=round(sum(fu.time)/365.25,2))
 lbw$lbw[is.na(lbw$lbw)==TRUE]<-"Missing"
-lbw$rate <- rate_per_k(lbw$episodes,lbw$tar)
+lbw$rate <- rate_per_k(lbw$cases,lbw$tar)
 lbw$rr[lbw$lbw == ">=2.5"] <- lbw$rate[lbw$lbw == ">=2.5"] / lbw$rate[lbw$lbw == ">=2.5"]
 lbw$rr[lbw$lbw == "<2.5"] <- lbw$rate[lbw$lbw == "<2.5"] / lbw$rate[lbw$lbw == ">=2.5"]
 lbw$rr[lbw$lbw == "Missing"] <- lbw$rate[lbw$lbw == "Missing"] / lbw$rate[lbw$lbw == ">=2.5"]
-lbw$se[lbw$lbw == "<2.5"] <- se_log_rr(lbw$episodes[lbw$lbw=="<2.5"], lbw$episodes[lbw$lbw==">=2.5"])
-lbw$se[lbw$lbw == "Missing"] <- se_log_rr(lbw$episodes[lbw$lbw=="Missing"], lbw$episodes[lbw$lbw==">=2.5"])
+lbw$se[lbw$lbw == "<2.5"] <- se_log_rr(lbw$cases[lbw$lbw=="<2.5"], lbw$cases[lbw$lbw==">=2.5"])
+lbw$se[lbw$lbw == "Missing"] <- se_log_rr(lbw$cases[lbw$lbw=="Missing"], lbw$cases[lbw$lbw==">=2.5"])
 lbw$lci <- lbw$rr/exp(1.96*lbw$se)
 lbw$uci <- lbw$rr*exp(1.96*lbw$se)
 lbw$z <- z_rr(lbw$rr, lbw$se)
@@ -182,11 +182,11 @@ rm(lbw)
 
 # animal ownership ####
 animalown <- ddply(first, .(animalown) , summarise, 
-             n=sum(obs), cases=sum(case), episodes=sum(max), tar=round(sum(tdar)/365.25,2))
-animalown$rate <- rate_per_k(animalown$episodes,animalown$tar)
+             n=sum(obs), cases=sum(case), episodes=sum(max), tar=round(sum(fu.time)/365.25,2))
+animalown$rate <- rate_per_k(animalown$cases,animalown$tar)
 animalown$rr[animalown$animalown == "No"] <- animalown$rate[animalown$animalown == "No"] / animalown$rate[animalown$animalown == "No"]
 animalown$rr[animalown$animalown == "Yes"] <- animalown$rate[animalown$animalown == "Yes"] / animalown$rate[animalown$animalown == "No"]
-animalown$se <- se_log_rr(animalown$episodes[animalown$animalown=="Yes"], animalown$episodes[animalown$animalown=="No"])
+animalown$se <- se_log_rr(animalown$cases[animalown$animalown=="Yes"], animalown$cases[animalown$animalown=="No"])
 animalown$lci <- animalown$rr/exp(1.96*animalown$se)
 animalown$uci <- animalown$rr*exp(1.96*animalown$se)
 animalown$z <- z_rr(animalown$rr, animalown$se)
@@ -200,11 +200,11 @@ rm(animalown)
 
 # beediwork ####
 beediwork <- ddply(first, .(beediwork) , summarise, 
-                   n=sum(obs), cases=sum(case), episodes=sum(max), tar=round(sum(tdar)/365.25,2))
-beediwork$rate <- rate_per_k(beediwork$episodes,beediwork$tar)
+                   n=sum(obs), cases=sum(case), episodes=sum(max), tar=round(sum(fu.time)/365.25,2))
+beediwork$rate <- rate_per_k(beediwork$cases,beediwork$tar)
 beediwork$rr[beediwork$beediwork == "No"] <- beediwork$rate[beediwork$beediwork == "No"] / beediwork$rate[beediwork$beediwork == "No"]
 beediwork$rr[beediwork$beediwork == "Yes"] <- beediwork$rate[beediwork$beediwork == "Yes"] / beediwork$rate[beediwork$beediwork == "No"]
-beediwork$se <- se_log_rr(beediwork$episodes[beediwork$beediwork=="Yes"], beediwork$episodes[beediwork$beediwork=="No"])
+beediwork$se <- se_log_rr(beediwork$cases[beediwork$beediwork=="Yes"], beediwork$cases[beediwork$beediwork=="No"])
 beediwork$lci <- beediwork$rr/exp(1.96*beediwork$se)
 beediwork$uci <- beediwork$rr*exp(1.96*beediwork$se)
 beediwork$z <- z_rr(beediwork$rr, beediwork$se)

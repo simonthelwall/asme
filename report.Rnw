@@ -32,7 +32,6 @@
 %\SweaveOpts{concordance=TRUE}
 \section{Methods}
 <<setup, results='asis', echo=FALSE, message=FALSE>>=
-require(splines)
 library(survival)
 library(foreign)
 library(plyr)
@@ -104,7 +103,7 @@ first <- merge(first, max.episodes, all.x=TRUE, by.x="id", by.y="id")
 first$tyar <- first$tdar/365.25
 first$doe2 <- as.numeric(first$doe)
 first$dexit <-as.numeric(first$exitdate)
-first$futime <- first$dexit - first$doe2
+first$fu.time <- first$dexit - first$doe2
 first$case <- 0
 first$case[first$exittype == "RV diarrhoea"] <- 1
 
