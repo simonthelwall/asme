@@ -228,31 +228,71 @@ period2$season2[period2$season==4] <- "May - Nov 2004"
 period2$season2[period2$season==5] <- "Dec 2004- Apr 2005"
 period2$season2[period2$season==6] <- "May - Nov 2005"
 period2
-period2$rr <- NA
-period2$rr[period2$season==1] <- period2$rate[period2$season==1]/period2$rate[period2$season==0]
-period2$rr[period2$season==2] <- period2$rate[period2$season==2]/period2$rate[period2$season==0]
-period2$rr[period2$season==3] <- period2$rate[period2$season==3]/period2$rate[period2$season==0]
-period2$rr[period2$season==4] <- period2$rate[period2$season==4]/period2$rate[period2$season==0]
-period2$rr[period2$season==5] <- period2$rate[period2$season==5]/period2$rate[period2$season==0]
-period2$rr[period2$season==6] <- period2$rate[period2$season==6]/period2$rate[period2$season==0]
-period2$se <- NA
-period2$se[period2$season==1] <- period2$cases[period2$season==1]/period2$cases[period2$season==0]
-period2$se[period2$season==2] <- period2$cases[period2$season==2]/period2$cases[period2$season==0]
-period2$se[period2$season==3] <- period2$cases[period2$season==3]/period2$cases[period2$season==0]
-period2$se[period2$season==4] <- period2$cases[period2$season==4]/period2$cases[period2$season==0]
-period2$se[period2$season==5] <- period2$cases[period2$season==5]/period2$cases[period2$season==0]
-period2$se[period2$season==6] <- period2$cases[period2$season==6]/period2$cases[period2$season==0]
-period2$lci <- period2$rr/exp(1.96*period2$se)
-period2$uci <- period2$rr*exp(1.96*period2$se)
-period2$z <- z_rr(period2$rr, period2$se)
-period2$p <- p_rr(period2$z)
-period2 # not sure about the CI here.
-
 season.m <- survreg(Surv(f.expanded3$tdar,f.expanded3$case)~factor(season),
                     data=f.expanded3, dist="exponential")
 summary(season.m)
 season.out <- srOrWrapper(season.m)
 season.out
+season.out[2,1]
+season.out[7,1]
+period2$hr <- NA
+period2$hr[period2$season==1] <- season.out[2,1]
+period2$hr[period2$season==2] <- season.out[3,1]
+period2$hr[period2$season==3] <- season.out[4,1]
+period2$hr[period2$season==4] <- season.out[5,1]
+period2$hr[period2$season==5] <- season.out[6,1]
+period2$hr[period2$season==6] <- season.out[7,1]
+period2$lci <- NA
+period2$lci[period2$season==1] <- season.out[2,3]
+period2$lci[period2$season==2] <- season.out[3,3]
+period2$lci[period2$season==3] <- season.out[4,3]
+period2$lci[period2$season==4] <- season.out[5,3]
+period2$lci[period2$season==5] <- season.out[6,3]
+period2$lci[period2$season==6] <- season.out[7,3]
+period2$uci <- NA
+period2$uci[period2$season==1] <- season.out[2,4]
+period2$uci[period2$season==2] <- season.out[3,4]
+period2$uci[period2$season==3] <- season.out[4,4]
+period2$uci[period2$season==4] <- season.out[5,4]
+period2$uci[period2$season==5] <- season.out[6,4]
+period2$uci[period2$season==6] <- season.out[7,4]
+period2$p <- NA
+period2$p[period2$season==1] <- season.out[2,5]
+period2$p[period2$season==2] <- season.out[3,5]
+period2$p[period2$season==3] <- season.out[4,5]
+period2$p[period2$season==4] <- season.out[5,5]
+period2$p[period2$season==5] <- season.out[6,5]
+period2$p[period2$season==6] <- season.out[7,5]
+period2$season <- NULL
+period2$var <- "Season"
+period2 <- period2[c(9,4,1,2,3,5,6,7,8)]
+names(period2)[2] <- "val"
+period2
+
+# formatting age for epic table
+first$age.entry <- round((as.numeric(first$doe, format="days") - as.numeric(first$dob, format="days"))/28,2)
+first$age.exit <- round((as.numeric(first$exitdate, format="days") - as.numeric(first$dob, format="days"))/28,2)
+f.expanded <-survSplit(first, cut = c(2, 4, 8, 12, 16, 24), 
+                       end = "age.exit", event = "case",
+                       start = "age.entry", zero = "dob", id = "id", episode = "age")
+head(f.expanded)
+f.expanded[f.expanded$id==6,]
+
+head(f.expanded)
+length(f.expanded$id)
+sum(f.expanded$case)
+f.expanded[f.expanded$id==6,]
+f.expanded$age.m <- 0
+f.expanded$age.m[f.expanded$age==0] <- "0-2"
+f.expanded$age.m[f.expanded$age==1] <- "2-4"
+f.expanded$age.m[f.expanded$age==2] <- "4-8"
+f.expanded$age.m[f.expanded$age==3] <- "8-12"
+f.expanded$age.m[f.expanded$age==4] <- "12-16"
+f.expanded$age.m[f.expanded$age==5] <- "16-24"
+f.expanded$age.m[f.expanded$age==6] <- "gt24"
+
+f.expanded$fu.time <- f.expanded$dexit - f.expanded$doe2
+
 
 p2 <- ddply(period2, .(season2), summarise, cases=sum(cases), tyar=sum(tyar))
 p2$rate <- round((p2$cases/p2$tyar)*1000,2)
