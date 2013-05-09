@@ -23,7 +23,7 @@ first$doe2 <- as.numeric(first$doe)
 first$dexit <-as.numeric(first$exitdate)
 first$futime <- first$dexit - first$doe2
 
-# Does recoding mother's education make much of a difference?
+# Does recoding mother's education make much of a difference? ####
 chisq.test(first$edumoth,first$case)
 first$ed2 <- 0
 first$ed2[first$edumoth=="None"] <- 1
@@ -81,6 +81,8 @@ exp(log(2.587618)*(1.96*0.8068068)) #close
 exp(log(2.587618)/(1.96*0.8068068)) #close
 exp(log(2.587618)-(1.96*0.8068068)) #no
 
+
+# some age stuff ####
 first$age.entry <- round(as.numeric(first$doe - first$dob, format="days")/28, 2)
 range(first$age.entry)
 first$age.exit <- round(as.numeric(first$exitdate - first$dob, format="days")/28, 2)
@@ -270,7 +272,7 @@ period2 <- period2[c(9,4,1,2,3,5,6,7,8)]
 names(period2)[2] <- "val"
 period2
 
-# formatting age for epic table
+# formatting age for epic table ####
 first$age.entry <- round((as.numeric(first$doe, format="days") - as.numeric(first$dob, format="days"))/28,2)
 first$age.exit <- round((as.numeric(first$exitdate, format="days") - as.numeric(first$dob, format="days"))/28,2)
 f.expanded <-survSplit(first, cut = c(2, 4, 8, 12, 16, 24), 
@@ -452,3 +454,51 @@ all$id[all$numprevepisode==4]
 all$id[all$numprevepisode==3]
 length(all$id[all$numprevepisode==0])
 length(unique(all$id[all$numprevepisode==0]))
+
+# how much do variables correlate ? ####
+
+table(first$edumoth, first$hhsize)
+prop.table(table(first$edumoth, first$hhsize), 1)
+chisq.test(table(first$edumoth, first$hhsize)) # no sign assn
+
+table(first$edumoth, first$ses)
+prop.table(table(first$edumoth, first$ses), 1)
+chisq.test(table(first$edumoth, first$ses)) # sign assn
+
+table(first$edumoth, first$beediwork)
+prop.table(table(first$edumoth, first$beediwork), 1)
+chisq.test(table(first$edumoth, first$beediwork)) # sign assn
+
+table(first$edumoth, first$animalown)
+prop.table(table(first$edumoth, first$animalown), 1)
+chisq.test(table(first$edumoth, first$animalown)) # borderline sign assn
+
+first <- subset(first, lbw != "Missing")
+first <- droplevels(first)
+levels(factor(first$lbw))
+
+table(first$edumoth, first$lbw)
+prop.table(table(first$edumoth, first$lbw), 1)
+chisq.test(table(first$edumoth, first$lbw)) # 
+
+
+# ses
+table(first$ses, first$hhsize)
+prop.table(table(first$ses, first$hhsize), 1)
+chisq.test(table(first$ses, first$hhsize)) # sign assn
+
+table(first$ses, first$animalown)
+prop.table(table(first$ses, first$animalown), 1)
+chisq.test(table(first$ses, first$animalown)) # sign assn, but not colinear
+
+table(first$ses, first$beediwork)
+prop.table(table(first$ses, first$beediwork), 1)
+chisq.test(table(first$ses, first$beediwork)) # no sign assn
+
+table(first$ses, first$lbw)
+prop.table(table(first$ses, first$lbw), 1)
+chisq.test(table(first$ses, first$lbw)) # no sign assn
+
+table(first$ses, first$neonatalrv)
+prop.table(table(first$ses, first$neonatalrv), 1)
+chisq.test(table(first$ses, first$neonatalrv)) # no sign assn

@@ -86,13 +86,13 @@ extractCI <- function(m){
 
 # reading data in ####
 
-#first <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\firstrv.dta")
-first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
+first <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\firstrv.dta")
+#first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
 #first<-read.dta("/home/simon/Documents/MSc/Modules/ASME/firstrv.dta")
 # can start with very basics. How many children, how many events. Age and sex. 
 first$lbw <- as.character(first$lbw)
-#all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
-all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
+all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
+#all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
 #all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
 # get max number of episodes by id and time at risk
 all$case <- 0
@@ -115,8 +115,9 @@ first$case[first$exittype == "RV diarrhoea"] <- 1
 @
 All analyses were performed in \Sexpr{substring(R.version.string,1,16)}, except for multivariable poisson regression which was performed in Stata 12.\\
 \section{Results}
-A total of \Sexpr{length(first$case)} children were recruited to the study, of these \Sexpr{sum(first$case)} (\Sexpr{round((sum(first$case)/length(first$case)*100), 2)} \%) developed rotaviral diarrhoea. \\
-The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$futime)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.\\ 
+A total of \Sexpr{length(first$case)} children were recruited to the study, of these \Sexpr{sum(first$case)} (\Sexpr{round((sum(first$case)/length(first$case)*100), 2)} \%) developed rotaviral diarrhoea. 
+A total of \Sexpr{sum(all$case, na.rm=TRUE)} episodes of rotaviral diarrhoea were recorded over the duration of the study.\\
+The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$fu.time)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.\\ 
 <<epic_table, results='asis', echo=FALSE>>=
 source("epictable.R")
 print(tab, include.rownames=FALSE, booktabs=TRUE, floating.environment='sidewaystable')
