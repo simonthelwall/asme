@@ -98,6 +98,8 @@ all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
 all$case <- 0
 all$case[all$exittype == "RV diarrhoea"] <- 1
 all$dar <- as.numeric(all$endfoll - all$startfoll,format="days")
+all$doe2 <- as.numeric(all$startfoll, format="days")
+all$dexit <- as.numeric(all$endfoll, format="days")
 max.episodes <- ddply(all, .(id), summarise, max=max(numprevepisode, na.rm=TRUE), tdar=sum(dar, na.rm=TRUE))
 
 # Combine max episodes and tdar into first dataframe
@@ -111,7 +113,7 @@ first$case[first$exittype == "RV diarrhoea"] <- 1
 
 # end read in ####
 @
-
+All analyses were performed in \Sexpr{substring(R.version.string,1,16)}, except for multivariable poisson regression which was performed in Stata 12.\\
 \section{Results}
 A total of \Sexpr{length(first$case)} children were recruited to the study, of these \Sexpr{sum(first$case)} (\Sexpr{round((sum(first$case)/length(first$case)*100), 2)} \%) developed rotaviral diarrhoea. \\
 The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$futime)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.\\ 

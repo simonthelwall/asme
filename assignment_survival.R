@@ -10,9 +10,10 @@ setwd("/home/simon/Documents/MSc/Modules/ASME/asme")
 all <- read.dta("/home/simon/Documents/MSc/Modules/ASME/allrv.dta")
 all$male <- 0
 all$male[all$sex=="M"] <- 1
-head(all)
 all$case <- 0
 all$case[all$exittype=="RV diarrhoea"] <- 1
+all <- all[order(all$id)]
+head(all)
 first<-read.dta("/home/simon/Documents/MSc/Modules/ASME/firstrv.dta")
 #first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
 first$case <- 0
@@ -269,7 +270,7 @@ period2 <- period2[c(9,4,1,2,3,5,6,7,8)]
 names(period2)[2] <- "val"
 period2
 
-# formatting age for epic table - actually should keep 'all' data for multivariable model. Restrict univariate to first episodes? 
+# formatting age for epic table
 first$age.entry <- round((as.numeric(first$doe, format="days") - as.numeric(first$dob, format="days"))/28,2)
 first$age.exit <- round((as.numeric(first$exitdate, format="days") - as.numeric(first$dob, format="days"))/28,2)
 f.expanded <-survSplit(first, cut = c(2, 4, 8, 12, 16, 24), 
@@ -338,6 +339,11 @@ age <- age[c(9,1,2,3,4,5,6,7,8)]
 names(age)[2] <- "val"
 age
 
+# checking output from regression same as hand-calculated
+first$fu.time <- as.numeric(first$exitdate-first$doe, format="days")/365.25
+sex.m <- survreg(Surv(first$fu.time, first$case)~sex, data=first, dist="exponential")
+srOrWrapper(sex.m)
+# Not quite the same, better use regression? - probably, for consistency. 
 # regression 
 range(f.expanded3$season)
 f.expanded3$season2[f.expanded3$season==0] <- "Not winter"
@@ -415,3 +421,34 @@ m1 <- survreg(Surv(f.expanded$fu.time, f.expanded$case) ~ beediwork +
 m1.hr <- srOrWrapper(m1)
 summary(m1)
 m1.hr
+
+# numprevep data for epic table
+# want the number of subjects with 5 episodes, with 4 episodes ...
+all$fu.time <- as.numeric(all$endfoll - all$startfoll, format="days")
+nprev <- ddply(all, .(numprevepisode), summarise, 
+               nid = length(id), cases = sum(case), tdar = sum(fu.time))
+nprev$tyar <- nprev$tdar/365.25
+nprev$rate <- rate_per_k(nprev$cases, nprev$tyar)
+nprev$rr<-NA
+nprev$rr[nprev$numprevepisode==1] <- nprev$rate[nprev$numprevepisode==1]/nprev$rate[nprev$numprevepisode==0]
+nprev$rr[nprev$numprevepisode==2] <- nprev$rate[nprev$numprevepisode==2]/nprev$rate[nprev$numprevepisode==0]
+nprev$rr[nprev$numprevepisode==3] <- nprev$rate[nprev$numprevepisode==3]/nprev$rate[nprev$numprevepisode==0]
+nprev$rr[nprev$numprevepisode==4] <- nprev$rate[nprev$numprevepisode==4]/nprev$rate[nprev$numprevepisode==0]
+nprev$rr[nprev$numprevepisode==5] <- nprev$rate[nprev$numprevepisode==5]/nprev$rate[nprev$numprevepisode==0]
+nprev$se <- NA
+nprev$se[nprev$numprevepisode==1] <- se_log_rr(nprev$cases[nprev$numprevepisode==1],nprev$cases[nprev$numprevepisode==0])
+nprev$se[nprev$numprevepisode==2] <- se_log_rr(nprev$cases[nprev$numprevepisode==2],nprev$cases[nprev$numprevepisode==0])
+nprev$se[nprev$numprevepisode==3] <- se_log_rr(nprev$cases[nprev$numprevepisode==3],nprev$cases[nprev$numprevepisode==0])
+nprev$se[nprev$numprevepisode==4] <- se_log_rr(nprev$cases[nprev$numprevepisode==4],nprev$cases[nprev$numprevepisode==0])
+nprev$se[nprev$numprevepisode==5] <- se_log_rr(nprev$cases[nprev$numprevepisode==5],nprev$cases[nprev$numprevepisode==0])
+nprev$lci <- nprev$rr/exp(1.96*nprev$se)
+nprev$uci <- nprev$rr*exp(1.96*nprev$se)
+nprev$z <- z_rr(nprev$rr, nprev$se)
+nprev$p <- round(p_rr(nprev$z),4)
+nprev$var <- "Number of previous episodes"
+nprev
+
+all$id[all$numprevepisode==4]
+all$id[all$numprevepisode==3]
+length(all$id[all$numprevepisode==0])
+length(unique(all$id[all$numprevepisode==0]))
