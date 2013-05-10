@@ -259,9 +259,40 @@ t1$uci <- NULL
 t1$p <- round(t1$p, 3)
 t1 <- t1[c(1,2,3,4,5,6,7,9,8)]
 t1$var[t1$var=="sex" & t1$val=="Male"] <- "Sex"
-t1$var[t1$var=="sex" & t1$val=="Female"] <- ""
-t1$var[t1$var=="neo" & t1$val=="No neonatal rotavirus"] <- "Neonatal rotaviral diarrhoea"
-t1$var[t1$var=="sex" & t1$val=="Female"] <- ""
-t1
-tab <- xtable(t1, caption = "Characteristics of study participants", label = "epic")
+t1$rateratio[t1$var=="neo" & t1$val=="No neonatal rotavirus"] <- "Ref"
+t1$p[t1$var=="neo" & t1$val=="No neonatal rotavirus"] <- "-"
+t1$var[t1$var=="neo" & t1$val=="No neonatal rotavirus"] <- "\\shortstack{Neonatal rotaviral \\\\diarrhoea}"
+t1$var[t1$var=="neo" & t1$val=="Neonatal rotavirus"] <- ""
+t1$rateratio[t1$var=="Sex" & t1$val=="Female"] <- "Ref"
+t1$p[t1$var=="Sex" & t1$val=="Female"] <- "-"
+t1$rateratio[t1$var=="Age" & t1$val=="0-2 months"] <- "Ref"
+t1$p[t1$var=="Age" & t1$val=="0-2 months"] <- "-"
+t1$rateratio[t1$var=="Mother's education" & t1$val=="Higher secondary & college"] <- "Ref"
+t1$p[t1$var=="Mother's education" & t1$val=="Higher secondary & college"] <- "-"
+t1$rateratio[t1$var=="Household size" & t1$val=="<=5"] <- "Ref"
+t1$p[t1$var=="Household size" & t1$val=="<=5"] <- "-"
+t1$rateratio[t1$var=="Socioeconomic status" & t1$val=="Class II"] <- "Ref"
+t1$p[t1$var=="Socioeconomic status" & t1$val=="Class II"] <- "-"
+t1$rateratio[t1$var=="Birthweight" & t1$val==">=2.5"] <- "Ref"
+t1$p[t1$var=="Birthweight" & t1$val==">=2.5"] <- "-"
+t1$rateratio[t1$var=="Animal ownership" & t1$val=="No"] <- "Ref"
+t1$p[t1$var=="Animal ownership" & t1$val=="No"] <- "-"
+t1$rateratio[t1$var=="Beedi made in household" & t1$val=="No"] <- "Ref"
+t1$p[t1$var=="Beedi made in household" & t1$val=="No"] <- ""
+
+t1$var[t1$var=="Sex" & t1$val=="Female"] <- ""
+t1$var[t1$var=="Age" & t1$val!="0-2 months"] <- ""
+t1$var[t1$var=="Mother's education" & t1$val!="None"] <- ""
+t1$var[t1$var=="Household size" & t1$val==">5"] <- ""
+t1$var[t1$var=="Socioeconomic status" & t1$val=="Class II"] <- ""
+t1$var[t1$var=="Birthweight" & t1$val!="<2.5"] <- ""
+t1$var[t1$var=="Animal ownership" & t1$val=="Yes"] <- ""
+t1$var[t1$var=="Beedi made in household" & t1$val=="Yes"] <- ""
+t1$val[t1$val=="Primary & middle school"] <- "Primary \\& middle school"
+t1$val[t1$val=="Higher secondary & college"] <- "Higher secondary \\& college"
+
+
+names(t1) <- c("Characteristic","", "n", "Cases", "Total episodes", "\\shortstack{Person years \\\\at risk}", "\\shortstack{Rate, per \\\\1000 person years}", "Rate ratio", "p")
+
+tab <- xtable(t1, caption = "Univariate analysis of potential risk factors for rotaviral diarrhoea in children aged two months to two years, India 2002 to 2005.", label = "epic")
 digits(tab)[c(4,5,6)] <- 0

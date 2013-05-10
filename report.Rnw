@@ -86,13 +86,13 @@ extractCI <- function(m){
 
 # reading data in ####
 
-first <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\firstrv.dta")
-#first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
+#first <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\firstrv.dta")
+first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
 #first<-read.dta("/home/simon/Documents/MSc/Modules/ASME/firstrv.dta")
 # can start with very basics. How many children, how many events. Age and sex. 
 first$lbw <- as.character(first$lbw)
-all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
-#all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
+#all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
+all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
 #all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
 # get max number of episodes by id and time at risk
 all$case <- 0
@@ -113,14 +113,23 @@ first$case[first$exittype == "RV diarrhoea"] <- 1
 
 # end read in ####
 @
-All analyses were performed in \Sexpr{substring(R.version.string,1,16)}, except for multivariable poisson regression which was performed in Stata 12.\\
+To account for the effect of calendar time and age, the data were split first on calendar period and then subject age. 
+Potential interactions were examined using Mantel-Haenszel stratification of rate ratios. 
+Multivariable regression was performed by fitting a poisson model, with clustering by subject identifier to account for repeated observations. 
+Since all variables were considered potential risk factors \textit{a priori}, a maximal model was fitted.
+All analyses were performed in \Sexpr{substring(R.version.string,1,16)}, except for Mantel-Haenszel stratified analyses and multivariable poisson regression which were performed in Stata version 12.\\
 \section{Results}
 A total of \Sexpr{length(first$case)} children were recruited to the study, of these \Sexpr{sum(first$case)} (\Sexpr{round((sum(first$case)/length(first$case)*100), 2)} \%) developed rotaviral diarrhoea. 
 A total of \Sexpr{sum(all$case, na.rm=TRUE)} episodes of rotaviral diarrhoea were recorded over the duration of the study.\\
-The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$fu.time)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.\\ 
+The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$fu.time)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.\\
+In unvariate analyses there was strong evidence that the rate of diarrhoea was higher in males than in females, was higher in children who had experienced neonatal rotaviral diarrhoea compared to those who hadn't and was higher for children from households where beedi were made than those from households where beedi weren't made (Table \ref{epic}). \\
+Mantel-Haenzsel analysis indicated interactions between xxx and socioeconomic status and between xxx and xxx. 
+
+\section{Discussion}
+Chance, bias, confounding. 
 <<epic_table, results='asis', echo=FALSE>>=
 source("epictable.R")
-print(tab, include.rownames=FALSE, booktabs=TRUE, floating.environment='sidewaystable')
+print(tab, include.rownames=FALSE, booktabs=TRUE, size="small", floating.environment='sidewaystable', sanitize.text.function = function(x){x})
 rm(tab)
 @
 

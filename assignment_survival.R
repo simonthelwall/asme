@@ -448,7 +448,26 @@ nprev$uci <- nprev$rr*exp(1.96*nprev$se)
 nprev$z <- z_rr(nprev$rr, nprev$se)
 nprev$p <- round(p_rr(nprev$z),4)
 nprev$var <- "Number of previous episodes"
+nprev$tdar <- NULL
+nprev$se <- NULL
+nprev$z <- NULL
+nprev$tyar <- round(nprev$tyar, 2)
+nprev$rate <- round(nprev$rate, 2)
+nprev$rr <- paste(round(nprev$rr, 2), " (", round(nprev$lci, 2), "-", round(nprev$uci, 2), ")", sep = "")
+nprev$lci <- NULL
+nprev$uci <- NULL
+nprev$rr[nprev$numprevepisode==0] <- ""
+nprev$p[nprev$numprevepisode==0] <- ""
+nprev$rr[nprev$numprevepisode==5] <- "1.00"
+nprev$p[nprev$numprevepisode==5] <- ""
+nprev$episodes <- ""
+nprev <- nprev[c(8,1,2,3,9,4,5,6,7)]
+names(nprev) <- c("var", "val", "n", "cases", "episodes", "tar", "rate", "rr", "p")
 nprev
+
+# cross checking time at risk
+sum(nprev$tar)
+# 261+289 times do not sum with epic table. Present as separate table? 
 
 all$id[all$numprevepisode==4]
 all$id[all$numprevepisode==3]
