@@ -30,7 +30,7 @@
 \makeatother
 \begin{document}
 %\SweaveOpts{concordance=TRUE}
-\section{Methods}
+
 <<setup, results='asis', echo=FALSE, message=FALSE>>=
 library(survival)
 library(foreign)
@@ -86,13 +86,13 @@ extractCI <- function(m){
 
 # reading data in ####
 
-#first <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\firstrv.dta")
-first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
+first <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\firstrv.dta")
+#first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
 #first<-read.dta("/home/simon/Documents/MSc/Modules/ASME/firstrv.dta")
 # can start with very basics. How many children, how many events. Age and sex. 
 first$lbw <- as.character(first$lbw)
-#all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
-all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
+all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
+#all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
 #all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
 # get max number of episodes by id and time at risk
 all$case <- 0
@@ -113,29 +113,69 @@ first$case[first$exittype == "RV diarrhoea"] <- 1
 
 # end read in ####
 @
+\section{Methods}
 To account for the effect of calendar time and age, the data were split first on calendar period and then subject age. 
-Potential interactions were examined using Mantel-Haenszel stratification of rate ratios. 
-Multivariable regression was performed by fitting a poisson model, with clustering by subject identifier to account for repeated observations. 
-Since all variables were considered potential risk factors \textit{a priori}, a maximal model was fitted.
-All analyses were performed in \Sexpr{substring(R.version.string,1,16)}, except for Mantel-Haenszel stratified analyses and multivariable poisson regression which were performed in Stata version 12.\\
+Potential interactions were examined using Mantel-Haenszel stratification of rate ratios. \\
+\indent Multivariable regression was performed by fitting a poisson model, with clustering by subject identifier to account for repeated observations. 
+All variables were considered potential risk factors \textit{a priori}. 
+Both being of a low birth weight and history of neonatal rotaviral diarrhoea could reflect a general state of ill health and predispose to rotaviral disease in later infancy. 
+Mother's education level and a families socio-economic status (SES) could reflect a number of potential aspects about the environment in which subjects lived and a lower SES was presumed to increase the risk of rotaviral diarrhoea. 
+Household size would be likely to increase risk of rotaviral diarrhoea by increasing the number of close contacts an individual had. 
+Animal ownership was expected to increase the risk of infectious disease by decreasing general levels of hygiene, and perhaps by zoonotic infections making infection by rotavirus more likely. 
+Finally, beediwork could also decrease the general level of hygiene within a household. 
+Since each variable was considered a potential risk factor, a maximal multivariable regression model was fitted. Poisson regression was chosen over Cox regression as it can be used to directly estimate rates. \\
+To address whether rates varied over time, the data were split by time period and rates were calculated per time period. 
+Preliminary analyses suggested an increase in rate during December and February and in June and July and so the study duration was split by quarter.
+The period with the greatest person-time was chosen as the baseline for regression. \\
+\indent To adjust for age, the data were split by age in months. 
+The first few months of age were considered likely to show the greatest variation in rate of rotaviral disese and therefore the age group was split with increasing time bands. \\
+\indent All analyses were performed in \Sexpr{substring(R.version.string,1,16)}, except for Mantel-Haenszel stratified analyses and multivariable poisson regression which were performed in Stata version 12.\\
 \section{Results}
-A total of \Sexpr{length(first$case)} children were recruited to the study, of these \Sexpr{sum(first$case)} (\Sexpr{round((sum(first$case)/length(first$case)*100), 2)} \%) developed rotaviral diarrhoea. 
+\indent A total of \Sexpr{length(first$case)} children were recruited to the study, of these \Sexpr{sum(first$case)} (\Sexpr{round((sum(first$case)/length(first$case)*100), 2)} \%) developed rotaviral diarrhoea. 
 A total of \Sexpr{sum(all$case, na.rm=TRUE)} episodes of rotaviral diarrhoea were recorded over the duration of the study.\\
-The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$fu.time)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.\\
-In unvariate analyses there was strong evidence that the rate of diarrhoea was higher in males than in females, was higher in children who had experienced neonatal rotaviral diarrhoea compared to those who hadn't and was higher for children from households where beedi were made than those from households where beedi weren't made (Table \ref{epic}). \\
-Mantel-Haenzsel analysis indicated interactions between xxx and socioeconomic status and between xxx and xxx. 
-
+\indent The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$fu.time)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.\\
+\indent In unvariate analyses there was strong evidence that the rate of diarrhoea was higher in males than in females, was higher in children who had experienced neonatal rotaviral diarrhoea compared to those who hadn't and was higher for children from households in which beedi were made than those from households in which beedi weren't made (Table \ref{epic}). \\
+\indent Mantel-Haenzsel analysis indicated interactions between xxx and socioeconomic status and between xxx and xxx. \\
+Table \ref{trend} shows the variation in rate over the duration of the study. 
+By univariate analysis there was moderate evidence that the rate of rotaviral diarrhoea was lower in December to February 2002/2003 and March to May 2003 compared to the September to November 2003.
+Following adjustment for subject age, there was strong evidence that the rate of rotaviral diarrhoea was different from the baseline for a number of different periods, and that the fit of the multivariate model was better than the fit of the univariate model. 
 \section{Discussion}
-Chance, bias, confounding. 
+\indent Chance, bias, confounding. 
 <<epic_table, results='asis', echo=FALSE>>=
 source("epictable.R")
 print(tab, include.rownames=FALSE, booktabs=TRUE, size="small", floating.environment='sidewaystable', sanitize.text.function = function(x){x})
 rm(tab)
 @
 
+\begin{sidewaystable}[p]
+\begin{center}
+\begin{tabular}{rrrrrrrrr}
+\toprule
+\multicolumn{1}{l}{} &  & \multicolumn{1}{l}{} &  & \multicolumn{1}{l}{} & \multicolumn{ 2}{c}{Univariate analysis*} & \multicolumn{ 2}{c}{Multivariate analysis**} \\ 
+\multicolumn{1}{c}{Quarter} & \multicolumn{1}{c}{\shortstack{Median age \\ months (IQR)}} & \multicolumn{1}{c}{\shortstack{Incident \\cases}} & \multicolumn{1}{c}{\shortstack{Person time \\years}} & \shortstack{Rate per \\ 1000 \\person years} & \multicolumn{1}{c}{\shortstack{Rate ratio \\(95 \% CI)}} & \shortstack{Wald \\p-value} & \multicolumn{1}{c}{\shortstack{Rate ratio \\(95 \% CI)}} & \multicolumn{1}{c}{\shortstack{Wald \\p-value}} \\ 
+\midrule
+Mar-May 2002 & 1.61 (1.43 - 1.79) & 0 & 0.0011 & 0.00 & 0.00 & 0.999 & 0.00 & 0.999 \\ 
+Jun-Aug 2002 & 2.80 (1.95 - 4.00) & 4 & 0.0131 & 305.78 & 1.67 (0.57 - 4.94) & 0.352 & 1.39 (0.45 - 4.28) & 0.570 \\ 
+Sep-Nov 2002 & 4.32 (2.39 - 6.14) & 9 & 0.0293 & 307.42 & 1.68 (0.76 - 3.74) & 0.203 & 1.33 (0.58 - 3.05) & 0.500 \\ 
+Dec 2002 - Feb 2003 & 4.84 (3.16 - 8.18) & 45 & 0.0536 & 840.17 & 4.60 (2.66 - 7.94) & \textless0.001 & 3.65 (2.06 - 6.49) & \multicolumn{1}{c}{\textless0.001} \\ 
+Mar-May 2003 & 6.87 (4.05 - 10.05) & 38 & 0.0759 & 500.58 & 2.74 (1.56 - 4.80) & \textless0.001 & 2.21 (1.25 - 3.92) & 0.007 \\ 
+Jun-Aug 2003 & 9.07 (5.21 - 12.61) & 39 & 0.0945 & 412.50 & 2.26 (1.29 - 3.95) & 0.004 & 1.97 (1.12 - 3.46) & 0.018 \\ 
+Sep-Nov 2003 & 12.39 (8.68 - 16.00) & 18 & 0.0985 & 182.77 & Reference &       & Reference & \multicolumn{1}{l}{     } \\ 
+Dec 2003 - Feb 2004 & 15.55 (11.71 - 19.07) & 26 & 0.0971 & 267.72 & 1.46 (0.80 - 2.67) & 0.213 & 1.90 (1.03 - 3.49) & 0.039 \\ 
+Mar-May 2004 & 18.89 (15.07 - 22.50) & 18 & 0.093 & 193.50 & 1.06 (0.55 - 2.03) & 0.864 & 1.93 (0.97 - 3.83) & 0.060 \\ 
+Jun-Aug 2004 & 21.82 (18.20 - 24.57) & 13 & 0.0809 & 160.67 & 0.88 (0.43 - 1.79) & 0.723 & 2.32 (1.05 - 5.12) & 0.037 \\ 
+Sep-Nov 2004 & 24.18 (21.04 - 26.09) & 12 & 0.0616 & 194.79 & 1.07 (0.51 - 2.21) & 0.864 & 3.91 (1.62 - 9.44) & 0.002 \\ 
+Dec 2004 - Feb 2005 & 25.21 (23.18 - 26.09) & 6 & 0.0379 & 158.46 & 0.87 (0.34 - 2.18) & 0.762 & 3.87 (1.27 - 11.76) & 0.017 \\ 
+Mar-May 2005 & 26.09 (26.09 - 26.09) & 8 & 0.0227 & 351.80 & 1.92 (0.84 - 4.43) & 0.123 & 8.6 (3.04 - 24.31) & \multicolumn{1}{c}{\textless0.001} \\ 
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Secular trends in rate of rotaviral diarrhoea in children aged two months to two years, India 2002 - 2005. IQR: interquartile range. *p for model \textless0.001. **Adjusted for age, p for model \textless0.001}
+\label{trend}
+\end{sidewaystable}
 <<trendtable, results='asis', echo=FALSE>>=
-source("incidence_rate.R")
-print(t, include.rownames=FALSE, booktabs=TRUE, sanitize.text.function = function(x){x})
-rm(t)
+#source("incidence_rate.R")
+#print(t, include.rownames=FALSE, booktabs=TRUE, sanitize.text.function = function(x){x})
+#rm(t)
 @
 \end{document}
