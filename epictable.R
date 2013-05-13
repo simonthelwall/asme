@@ -29,6 +29,8 @@ f.expanded <-survSplit(first, cut = c(2, 4, 8, 12, 16, 24),
 f.expanded$obs <- 1
 f.expanded$obs[duplicated(f.expanded$id)==TRUE]<-0
 f.expanded[f.expanded$id==6,]
+f.expanded$doe2 <- f.expanded$doe2 + (f.expanded$age.entry*28)
+f.expanded$dexit <- f.expanded$doe2 + (f.expanded$age.exit*28)
 f.expanded$futime2 <- f.expanded$dexit-f.expanded$doe2 # days
 age <- ddply(f.expanded, .(age), summarise, pdar=sum(futime2, na.rm=TRUE), cases=sum(case, na.rm=TRUE))
 age$pyar <- age$pdar/365.25
@@ -294,5 +296,5 @@ t1$val[t1$val=="Higher secondary & college"] <- "Higher secondary \\& college"
 
 names(t1) <- c("Characteristic","", "n", "Cases", "Total episodes", "\\shortstack{Person years \\\\at risk}", "\\shortstack{Rate, per \\\\1000 person years}", "Rate ratio", "p")
 
-tab <- xtable(t1, caption = "Univariate analysis of potential risk factors for rotaviral diarrhoea in children aged two months to two years, India 2002 to 2005.", label = "epic")
+tab <- xtable(t1, caption = "Univariable analysis of potential risk factors for rotaviral diarrhoea in children aged two months to two years, India 2002 to 2005.", label = "epic")
 digits(tab)[c(4,5,6)] <- 0
