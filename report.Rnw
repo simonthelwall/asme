@@ -1,6 +1,6 @@
 \documentclass[11pt,a4paper]{article}
 \title{ASME assignment}
-\author{Student number: xxxxxx}
+\author{Student number: 106936}
 \usepackage{booktabs}
 \usepackage{xspace}
 \usepackage{amsmath}%
@@ -17,11 +17,12 @@
 \setlength{\headheight}{15.2pt}
 %\setlength{\footskip=20pt}
 \pagestyle{fancy}
-\lhead[\thepage]{Student xxxxxx}
+\lhead[\thepage]{Student 106936}
 \chead[ ASME assignment]{ASME assignment}
-\rhead[ Student xxxxxx]{\thepage}
+\rhead[ Student 106936]{\thepage}
 \usepackage[compact]{titlesec}
-\titleformat*{\section}{\large\bfseries}
+\titleformat*{\section}{\bfseries}
+\titlespacing{\section}{0pt}{1ex}{0ex}
 \makeatletter
 \newcommand\gobblepars{%
     \@ifnextchar\par%
@@ -114,27 +115,27 @@ first$case[first$exittype == "RV diarrhoea"] <- 1
 # end read in ####
 @
 \section{Methods}
-The association between potential risk factors and the rate of rotaviral diarrhoea was examined first by calculating rate ratios and testing the null hypothesis that these were not equal to one using \textit{z}-tests. \\
-\indent Interactions between variables were examined first by pairwise Mantel-Haenszel analyses where interactions were considered important if they had a substantial effect on the rate ratio.
-Interactions considered important in Mantel-Haenszel analyses were then examined by inclusion or exclusion in multivariable models and were considered important if they had a substantial effect on the hazard ratio.\\
+Associations between potential risk factors and the rate of rotaviral diarrhoea was examined first by calculating rate ratios and tested using \textit{z}-tests. \\
+\indent Interactions between variables were examined first by Mantel-Haenszel analyses where interactions were considered important if they had a substantial effect on the rate ratio.
+Important interactions in such analyses were then examined by inclusion or exclusion in multivariable models and were considered important if they had a substantial effect on the rate ratio.\\
 \indent To adjust for the effect of calendar time and age, data were split on these variables. 
-Since the first few months of age were considered most likely to show the greatest variation in the rate of rotaviral diarrhoea, age was split into bands of increasing width. 
+Since the first few months of age were considered likely to show most variation in the rate of rotaviral diarrhoea, age was split into bands of increasing width. 
 Preliminary analyses suggested that the highest rates of rotaviral diarrhoea occurred between December and February and in June and July. 
-Calendar time was therefore split on annual quarters, starting from December.
+Calendar time was therefore split by quarter, starting from December.
 The period with the greatest person-time was chosen as the baseline period.\\
 \indent All variables were considered potential risk factors \textit{a priori}. 
-Both being of a low birth weight and history of neonatal rotaviral diarrhoea could reflect a general ill health and predispose to rotaviral disease later. 
-Mother's education level and a family's socio-economic status (SES) could reflect a number of potential aspects about the environment in which subjects lived and a lower SES was presumed to increase the risk of rotaviral diarrhoea. 
-Household size would be likely to increase risk of rotaviral diarrhoea by increasing the number of close contacts an individual had. 
-Animal ownership was expected to increase the risk of  disease by decreasing general levels of hygiene, and perhaps by zoonotic infections making rotavirus infection more likely. 
-Finally, beediwork could also decrease the general level of hygiene within a household. 
+Both being of a low birth weight and history of neonatal rotaviral diarrhoea could predispose to rotaviral disease later. 
+Mother's education level and a family's socio-economic status (SES) could reflect a number of aspects about the environment in which subjects lived and a lower SES was presumed to increase the risk of rotaviral diarrhoea. 
+Household size would be likely to increase risk of rotaviral diarrhoea by increasing the number of close contacts a child had. 
+Animal ownership was expected to increase the risk of  disease by decreasing general hygiene. 
+Beediwork could also decrease the general level of hygiene within a household. 
 Therefore, maximal regression models were fitted. 
 Poisson regression was chosen over Cox regression as it offers direct estimation of a rate. 
-To account for the effect of repeated observations on an individual, a random effects model was fitted. \\
+To account for the effect of repeated observations on an individual, random effect models was fitted. \\
 \indent To address whether the number of previous episodes affected the incidence of rotaviral diarrhoea, a univariable Poisson regression with number of previous episodes as an ordered categorical variable was performed first.
 Then a multivariable model, with previous events as a binary variable was fitted by Poisson regression with random effects.
 Records with missing data were dropped from all multivariable analyses.\\
-\indent Univariable analyses were performed in \Sexpr{substring(R.version.string,1,16)}, Mantel-Haenszel stratified analyses and multivariable poisson regression which were performed in Stata version 12.\\
+\indent Univariable analyses were performed in \Sexpr{substring(R.version.string,1,16)}, Mantel-Haenszel stratified analyses and multivariable poisson regression were performed in Stata version 12.\\
 %
 \section{Results}
 \indent A total of \Sexpr{length(first$case)} children were recruited to the study, of these \Sexpr{sum(first$case)} (\Sexpr{round((sum(first$case)/length(first$case)*100), 2)} \%) developed rotaviral diarrhoea. 
@@ -142,39 +143,42 @@ A total of \Sexpr{sum(all$case, na.rm=TRUE)} episodes of rotaviral diarrhoea wer
 The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$fu.time)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.
 \Sexpr{sum(all$case[all$numprev==0])} cases occurred in children who had not previously experienced rotaviral diarrhoea, \Sexpr{sum(all$case[all$numprev==1])} cases occurred in children with one previous episode, \Sexpr{sum(all$case[all$numprev==2])} cases in children with two, \Sexpr{sum(all$case[all$numprev==3])} in children with three, \Sexpr{sum(all$case[all$numprev==4])} in children with four and \Sexpr{sum(all$case[all$numprev==5])} cases in children with five. \\
 \indent \Sexpr{length(all$id[all$exittype=="Lost to followup"])} (\Sexpr{round(((length(all$id[all$exittype=="Lost to followup"])/length(unique(all$id)))*100),0)} \%) children were lost to follow-up. 
-Loss to follow-up was higher in children whose mothers had no education (23 \%) compared to those with primary and middle school education (11 \%) and compared to those whose mothers have higher secondary education (10 \%, p = 0.002).\\
+Loss to follow-up was higher in children whose mothers had no education (23 \%) compared to those with primary and middle school education (11 \%) and compared to those whose mothers have higher secondary education (10 \%, p = 0.002). 
+\Sexpr{length(unique(first$id[is.na(first$lbw)==TRUE]))} children had no data on birthweight. 
+There was no evidence that the rate of diarrhoea was higher among these children. \\
 \indent In univariable analyses there was strong evidence that the rate of diarrhoea was higher in males than in females, was higher in children whose mother had received no education compared to those whose mother had received higher education and was higher for children from households in which beedi were made than those from households in which they weren't (table \ref{epic}). \\
 \indent Mantel-Haenzsel analysis indicated interactions between animal ownership and socioeconomic status and between low birthweight and neonatal rotaviral diarrhoea. \\
-\indent By univariable analysis there was moderate evidence that the rate of rotaviral diarrhoea was lower in December 2002 to February 2003 and March to May 2003 compared to the September to November 2003 (table \ref{trend}).
-Following adjustment for subject age, there was strong evidence that the rate of rotaviral diarrhoea was different from the baseline for a number of periods, and that the fit of the multivariable model was better than the fit of the univariable model. \\
+\indent By univariable analysis there was some evidence that the rate of rotaviral diarrhoea was lower in December 2002 to February 2003 and March to May 2003 compared to September to November 2003 (table \ref{trend}).
+After adjusting for subject age, there remained strong evidence that the rate of rotaviral diarrhoea was different from baseline for a number of periods, and that the fit of the multivariable model was better than that of the univariable model. \\
 \indent After adjusting for other factors, there was strong evidence that the rate of rotaviral diarrhoea was higher in male children than in female, and higher in households where beedi were made compared to those where beedi were not made (table \ref{multivar}, model 1).
 Including interaction terms prevented Stata from estimating maximum likelihood values and so were not included in the final models. 
 There was strong evidence that having four previous episodes increased the likelihood of experiencing another (table \ref{multivar}, model 2). 
 There was no evidence that having any other number of previous episodes increased the likelihood of experiencing another compared to having no previous episodes. 
-Finally, after adjusting for other factors, there was no evidence that the rate of rotaviral diarrhoea was either higher or lower in children who had pervious episodes compared to those who had not(table \ref{multivar}, p = 0.58 lr test of model 2 vs model 3). \\
+Finally, after adjusting for other factors, there was no evidence that the rate of rotaviral diarrhoea was different in children who had previous episodes compared to those who had not (table \ref{multivar}, p = 0.58 lr test of model 1 vs model 3). \\
 %
 \section{Discussion}
 \indent In this study rotaviral diarrhoea was a prevalent disease, affecting over 35 \% of children in the study. 
-After adjustment for other factors, being of male sex and living in a household where beedi were made were were associated with higher rates of disease.  
+After adjustment for other factors, being of male sex and living in a household where beedi were made were associated with higher rates of disease.  
 There was strong evidence that the rate of rotaviral diarrhoea varied by time after adjusting for a child's age and there was no evidence that previous episodes of diarrhoea were associated with the probability of a subsequent episode occurring. \\
-\indent One limitation of these results is that due to software limitations, it was not possible to study interactions in multivariable models. 
-This inability is likely to have concealed some important combinations of conditions, such as being of low birth weight and having neonatal rotaviral diarrhoea, which might have been associated with increased rates of diease. \\
+\indent One limitation is that due to software limitations, it was not possible to study interactions in multivariable models. 
+This is likely to have concealed some important combinations of conditions, such as being of low birth weight and having neonatal rotaviral diarrhoea, which might have been associated with increased rates of disease. \\
 \indent These results may not be reliable if unduly affected by chance, bias or confounding. 
 Chance is unlikely as there was strong evidence against the null hypothesis for both sex and for beedi manufacture. 
 Ten variables were tested for association, against a population of 447 children with 236 events. This satisfies the rule of 10 events per regression parameter, suggesting that type I error is unlikely. 
 The sample size of the study was reasonable and therefore type II error is unlikely. \\
 \indent 73 \% of eligible children were recruited into the study.
 No reason was given for non-enrollment and thus it is difficult to state whether selection bias occurred. 
-Had those children who were not enrolled had experienced either higher or lower rates of disease and different exposures, the associations determined here would not be reliable. 
+Had those children who were not enrolled experienced different rates of disease and different exposures, the associations determined here would not be reliable. 
 Loss to follow-up in this study was higher in children whose mothers had no education, suggesting a possible source of bias. 
 However, mother's education level was not associated with a different rate of disease and the loss to follow up is not likely to result in bias. 
 This study employed stool testing to confirm rotaviral diarrhoea.
-The nature of this testing is not known, but errors in testing could affect the strength of relationships determined here.
-Random error in diagnosis resulting in under diagnosis would bias any associations towards the null, potentially leading to type II error.
+The method of this testing is not known, but errors in testing could affect the strength of relationships determined.
+Random error in diagnosis resulting in under diagnosis would bias any associations towards the null.
 Non-random error in diagnosis could result in over or underestimation of associations.\\
-\indent Unmeasured confounding could account for some associations observed in this study. 
-The reason for the association between male sex and rotaviral diarrhoea is not clear and if another co-mobidity which predisposed to rotaviral diarrhoea were more prevalent among male infants, then it could account for the difference. 
-Similarly the mechanism by which beedi manufacture increases the rate is not known but potential major confounders such as SES, education level and household size have been controlled for. 
+\indent Unmeasured confounding could account for some associations observed here. 
+The reason for the association between male sex and rotaviral diarrhoea is not clear and if another co-mobidity which predisposed to rotaviral diarrhoea were more prevalent among males, then it could account for the difference. 
+Similarly the mechanism by which beedi manufacture increases the rate is not known but potential major confounders such as SES, education level and household size have been controlled for. \\
+\indent In conclusion, the rate of rotaviral diarrhoea varied by time, risk factors included beedi work and male sex but not previous experience of rotaviral diarrhoea.
 <<epic_table, results='asis', echo=FALSE>>=
 source("epictable.R")
 print(tab, include.rownames=FALSE, booktabs=TRUE, size="small", floating.environment='sidewaystable', sanitize.text.function = function(x){x})
@@ -204,7 +208,7 @@ Mar-May 2005 & 26.09 (26.09 - 26.09) & 8 & 0.0227 & 351.80 & 1.92 (0.84 - 4.43) 
 \bottomrule
 \end{tabular}
 \end{center}
-\caption{Secular trends in rate of rotaviral diarrhoea in children aged two months to two years, India 2002 - 2005. IQR: interquartile range. *p for model \textless0.001. **Adjusted for age, p for model \textless0.001.}
+\caption{Secular trends in rate of rotaviral diarrhoea in children aged two months to two years, India 2002 - 2005. Poisson regression with random effects. IQR: interquartile range. *p for model \textless0.001. **Adjusted for age, p for model \textless 0.001.}
 \label{trend}
 \end{sidewaystable}
 <<trendtable, results='asis', echo=FALSE>>=
@@ -218,7 +222,7 @@ Mar-May 2005 & 26.09 (26.09 - 26.09) & 8 & 0.0227 & 351.80 & 1.92 (0.84 - 4.43) 
 \begin{tabular}{llllllll}
 \toprule
  &  & \multicolumn{ 2}{c}{Model 1} & \multicolumn{ 2}{c}{Model 2} & \multicolumn{ 2}{c}{Model 3} \\ 
- &  & HR (95 \% CI) & \shortstack{Wald \\p-value} & HR (95 \% CI) & \shortstack{Wald \\p-value} & HR (95 \% CI) & \shortstack{Wald \\p-value} \\ 
+ &  & \shortstack{Rate ratio \\(95 \% CI)} & \shortstack{Wald \\p-value} & \shortstack{Rate ratio \\(95 \% CI)} & \shortstack{Wald \\p-value} & \shortstack{Rate ratio \\(95 \% CI)} & \shortstack{Wald \\p-value} \\ 
  \midrule
 Sex & Male & Reference &  &  &  & Reference &  \\ 
  & Female & 0.68 (0.50 - 0.91) & \multicolumn{1}{r}{0.009} &  &  & 0.70 (0.52 - 0.93) & \multicolumn{1}{r}{0.015} \\ 
@@ -249,9 +253,9 @@ Animal ownership & No  & Reference &  &  &  & Reference &  \\
 \end{tabular}
 \end{center}
 \caption{Multivariable poisson regression of potential risk factors for rotaviral diarrhoea in children aged two months to two years, India 2002 to 2005. 
-Model 1: Poisson regression with random effects, adjusted for age and calendar time, not adjusted for number of previous episodes or any previous episode, p for model < 0.001. 
+Model 1: Poisson regression with random effects, adjusted for age and calendar time, not adjusted for number of previous episodes or any previous episode, p for model < 0.001. p$\theta$ = 0.004.
 Model 2: Poisson regression for number of previous episodes, no random effects, adjusted for calendar time and age, p for model 0.071. 
-Model 3: Poisson regression with random effects, adjusted for age and calendar time, and any previous episode, p for model < 0.001.}
+Model 3: Poisson regression with random effects, adjusted for age and calendar time, and any previous episode, p for model < 0.001. p$\theta$ = 0.004.p$\theta$ = 0.268. }
 \label{multivar}
 \end{sidewaystable}
 
