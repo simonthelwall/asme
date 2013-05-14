@@ -1,4 +1,4 @@
-\documentclass[11pt,a4paper,twoside]{article}\usepackage{graphicx, color}
+\documentclass[11pt,a4paper]{article}\usepackage{graphicx, color}
 %% maxwidth is the original width if it is less than linewidth
 %% otherwise use linewidth (to make sure the graphics do not exceed the margin)
 \makeatletter
@@ -53,8 +53,8 @@
 \newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
 
 \usepackage{alltt}
-\title{SME assignment}
-\author{Student number: xxxxxx}
+\title{ASME assignment}
+\author{Student number: 106936}
 \usepackage{booktabs}
 \usepackage{xspace}
 \usepackage{amsmath}%
@@ -71,11 +71,12 @@
 \setlength{\headheight}{15.2pt}
 %\setlength{\footskip=20pt}
 \pagestyle{fancy}
-\lhead[\thepage]{Student xxxxxx}
-\chead[ SME assignment]{SME assignment}
-\rhead[ Student xxxxxx]{\thepage}
+\lhead[\thepage]{Student 106936}
+\chead[ ASME assignment]{ASME assignment}
+\rhead[ Student 106936]{\thepage}
 \usepackage[compact]{titlesec}
-\titleformat*{\section}{\large\bfseries}
+\titleformat*{\section}{\bfseries}
+\titlespacing{\section}{0pt}{1ex}{0ex}
 \makeatletter
 \newcommand\gobblepars{%
     \@ifnextchar\par%
@@ -85,78 +86,186 @@
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 %\SweaveOpts{concordance=TRUE}
+
+
+
 \section{Methods}
-\begin{kframe}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: package 'foreign' was built under R version 2.15.3}}\end{kframe}
-
-All analyses were performed in R version 2.15.2, except for multivariable poisson regression which was performed in Stata 12.\\
+Associations between potential risk factors and the rate of rotaviral diarrhoea was examined first by calculating rate ratios and tested using \textit{z}-tests. \\
+\indent Interactions between variables were examined first by Mantel-Haenszel analyses where interactions were considered important if they had a substantial effect on the rate ratio.
+Important interactions in such analyses were then examined by inclusion or exclusion in multivariable models and were considered important if they had a substantial effect on the rate ratio.\\
+\indent To adjust for the effect of calendar time and age, data were split on these variables. 
+Since the first few months of age were considered likely to show most variation in the rate of rotaviral diarrhoea, age was split into bands of increasing width. 
+Preliminary analyses suggested that the highest rates of rotaviral diarrhoea occurred between December and February and in June and July. 
+Calendar time was therefore split by quarter, starting from December.
+The period with the greatest person-time was chosen as the baseline period.\\
+\indent All variables were considered potential risk factors \textit{a priori}. 
+Both being of a low birth weight and history of neonatal rotaviral diarrhoea could predispose to rotaviral disease later. 
+Mother's education level and a family's socio-economic status (SES) could reflect a number of aspects about the environment in which subjects lived and a lower SES was presumed to increase the risk of rotaviral diarrhoea. 
+Household size would be likely to increase risk of rotaviral diarrhoea by increasing the number of close contacts a child had. 
+Animal ownership was expected to increase the risk of  disease by decreasing general hygiene. 
+Beediwork could also decrease the general level of hygiene within a household. 
+Therefore, maximal regression models were fitted. 
+Poisson regression was chosen over Cox regression as it offers direct estimation of a rate. 
+To account for the effect of repeated observations on an individual, random effect models was fitted. \\
+\indent To address whether the number of previous episodes affected the incidence of rotaviral diarrhoea, a univariable Poisson regression with number of previous episodes as an ordered categorical variable was performed first.
+Then a multivariable model, with previous events as a binary variable was fitted by Poisson regression with random effects.
+Records with missing data were dropped from all multivariable analyses.\\
+\indent Univariable analyses were performed in R version 2.15.2, Mantel-Haenszel stratified analyses and multivariable poisson regression were performed in Stata version 12.\\
+%
 \section{Results}
-A total of 447 children were recruited to the study, of these 160 (35.79 \%) developed rotaviral diarrhoea. 
-A total of 236 episodes of rotaviral diarrhoea were recorded over the duration of the study.\\
-The incidence rate for any case of rotaviral diarrhoea was 290.48 per thousand person-years and the incidence rate for all cases was 310.83 per thousand person-years.\\ 
+\indent A total of 447 children were recruited to the study, of these 160 (35.79 \%) developed rotaviral diarrhoea. 
+A total of 236 episodes of rotaviral diarrhoea were recorded over the duration of the study.
+The incidence rate for any case of rotaviral diarrhoea was 290.48 per thousand person-years and the incidence rate for all cases was 310.83 per thousand person-years.
+160 cases occurred in children who had not previously experienced rotaviral diarrhoea, 56 cases occurred in children with one previous episode, 14 cases in children with two, 4 in children with three, 2 in children with four and 0 cases in children with five. \\
+\indent 67 (15 \%) children were lost to follow-up. 
+Loss to follow-up was higher in children whose mothers had no education (23 \%) compared to those with primary and middle school education (11 \%) and compared to those whose mothers have higher secondary education (10 \%, p = 0.002). 
+10 children had no data on birthweight. 
+There was no evidence that the rate of diarrhoea was higher among these children. \\
+\indent In univariable analyses there was strong evidence that the rate of diarrhoea was higher in males than in females, was higher in children whose mother had received no education compared to those whose mother had received higher education and was higher for children from households in which beedi were made than those from households in which they weren't (table \ref{epic}). \\
+\indent Mantel-Haenzsel analysis indicated interactions between animal ownership and socioeconomic status and between low birthweight and neonatal rotaviral diarrhoea. \\
+\indent By univariable analysis there was some evidence that the rate of rotaviral diarrhoea was lower in December 2002 to February 2003 and March to May 2003 compared to September to November 2003 (table \ref{trend}).
+After adjusting for subject age, there remained strong evidence that the rate of rotaviral diarrhoea was different from baseline for a number of periods, and that the fit of the multivariable model was better than that of the univariable model. \\
+\indent After adjusting for other factors, there was strong evidence that the rate of rotaviral diarrhoea was higher in male children than in female, and higher in households where beedi were made compared to those where beedi were not made (table \ref{multivar}, model 1).
+Including interaction terms prevented Stata from estimating maximum likelihood values and so were not included in the final models. 
+There was strong evidence that having four previous episodes increased the likelihood of experiencing another (table \ref{multivar}, model 2). 
+There was no evidence that having any other number of previous episodes increased the likelihood of experiencing another compared to having no previous episodes. 
+Finally, after adjusting for other factors, there was no evidence that the rate of rotaviral diarrhoea was different in children who had previous episodes compared to those who had not (table \ref{multivar}, p = 0.58 lr test of model 1 vs model 3). \\
+%
+\section{Discussion}
+\indent In this study rotaviral diarrhoea was a prevalent disease, affecting over 35 \% of children in the study. 
+After adjustment for other factors, being of male sex and living in a household where beedi were made were associated with higher rates of disease.  
+There was strong evidence that the rate of rotaviral diarrhoea varied by time after adjusting for a child's age and there was no evidence that previous episodes of diarrhoea were associated with the probability of a subsequent episode occurring. \\
+\indent One limitation is that due to software limitations, it was not possible to study interactions in multivariable models. 
+This is likely to have concealed some important combinations of conditions, such as being of low birth weight and having neonatal rotaviral diarrhoea, which might have been associated with increased rates of disease. \\
+\indent These results may not be reliable if unduly affected by chance, bias or confounding. 
+Chance is unlikely as there was strong evidence against the null hypothesis for both sex and for beedi manufacture. 
+Ten variables were tested for association, against a population of 447 children with 236 events. This satisfies the rule of 10 events per regression parameter, suggesting that type I error is unlikely. 
+The sample size of the study was reasonable and therefore type II error is unlikely. \\
+\indent 73 \% of eligible children were recruited into the study.
+No reason was given for non-enrollment and thus it is difficult to state whether selection bias occurred. 
+Had those children who were not enrolled experienced different rates of disease and different exposures, the associations determined here would not be reliable. 
+Loss to follow-up in this study was higher in children whose mothers had no education, suggesting a possible source of bias. 
+However, mother's education level was not associated with a different rate of disease and the loss to follow up is not likely to result in bias. 
+This study employed stool testing to confirm rotaviral diarrhoea.
+The method of this testing is not known, but errors in testing could affect the strength of relationships determined.
+Random error in diagnosis resulting in under diagnosis would bias any associations towards the null.
+Non-random error in diagnosis could result in over or underestimation of associations.\\
+\indent Unmeasured confounding could account for some associations observed here. 
+The reason for the association between male sex and rotaviral diarrhoea is not clear and if another co-mobidity which predisposed to rotaviral diarrhoea were more prevalent among males, then it could account for the difference. 
+Similarly the mechanism by which beedi manufacture increases the rate is not known but potential major confounders such as SES, education level and household size have been controlled for. \\
+\indent In conclusion, the rate of rotaviral diarrhoea varied by time, risk factors included beedi work and male sex but not previous experience of rotaviral diarrhoea.
 % latex table generated in R 2.15.2 by xtable 1.7-1 package
-% Thu May 09 20:55:02 2013
+% Tue May 14 10:28:48 2013
 \begin{sidewaystable}[ht]
 \centering
-\begin{tabular}{llrrrrrlr}
+{\small
+\begin{tabular}{llrrrrrll}
   \toprule
-var & val & n & cases & episodes & tar & rate & rateratio & p \\ 
+Characteristic &  & n & Cases & Total episodes & \shortstack{Person years \\at risk} & \shortstack{Rate, per \\1000 person years} & Rate ratio & p \\ 
   \midrule
-Sex & Male & 225 & 91 & 138 & 261.34 & 348.21 & 1.46 (1.07 - 2.00) & 0.02 \\ 
-  Sex & Female & 222 & 69 & 98 & 289.48 & 238.36 & 1.00 (0.73 - 1.37) & 1.00 \\ 
-  Age & 0-2 months &  & 13 & 13 & 549.02 & 23.68 & NA (NA - NA) &  \\ 
-  Age & 2-4 months &  & 30 & 35 & 550.08 & 54.54 & 2.30 (1.20 - 4.42) & 0.01 \\ 
-  Age & 4-8 months &  & 44 & 60 & 541.85 & 81.20 & 3.43 (1.85 - 6.37) & 0.00 \\ 
-  Age & 8-12 months &  & 34 & 49 & 519.88 & 65.40 & 2.76 (1.46 - 5.23) & 0.00 \\ 
-  Age & 12-16 months &  & 21 & 38 & 492.10 & 42.67 & 1.80 (0.90 - 3.60) & 0.10 \\ 
-  Age & 16-24 months &  & 12 & 28 & 466.23 & 25.74 & 1.09 (0.50 - 2.38) & 0.83 \\ 
-  Age & $>$24 months &  & 6 & 13 & 447.10 & 13.42 & 0.57 (0.22 - 1.49) & 0.25 \\ 
-  Neonatal rotaviral diarrhoea & No neonatal rotavirus & 430 & 152 & 225 & 532.60 & 285.39 & 1.00 (0.49 - 2.04) & 1.00 \\ 
-  neo & Neonatal rotavirus & 17 & 8 & 11 & 18.22 & 439.00 & 1.54 (0.76 - 3.13) & 0.23 \\ 
-  Mother's education & None & 139 & 57 & 81 & 148.76 & 383.18 & 1.60 (1.11 - 2.30) & 0.01 \\ 
-  Mother's education & Primary \& middle school & 125 & 44 & 67 & 155.83 & 282.36 & 1.18 (0.80 - 1.74) & 0.41 \\ 
-  Mother's education & Higher secondary \& college & 183 & 59 & 88 & 246.23 & 239.61 & 1.00 (NA - NA) &  \\ 
-  Household size & $<$=5 & 299 & 105 & 151 & 362.73 & 289.47 & 1.00 (0.72 - 1.39) & 1.00 \\ 
-  Household size & $>$5 & 148 & 55 & 85 & 188.09 & 292.42 & 1.01 (0.73 - 1.40) & 0.95 \\ 
-  Socioeconomic status & Class I & 277 & 103 & 153 & 326.61 & 315.36 & 1.24 (0.90 - 1.71) & 0.19 \\ 
-  Socioeconomic status & Class II & 170 & 57 & 83 & 224.21 & 254.23 & 1.00 (0.72 - 1.38) & 1.00 \\ 
-  Birthweight & $<$2.5 & 51 & 20 & 29 & 64.91 & 308.12 & 1.06 (0.66 - 1.69) & 0.81 \\ 
-  Birthweight & $>$=2.5 & 386 & 137 & 201 & 471.23 & 290.73 & 1.00 (NA - NA) &  \\ 
-  Birthweight & Missing & 10 & 3 & 6 & 14.67 & 204.50 & 0.70 (0.22 - 2.21) & 0.55 \\ 
-  Animal ownership & No & 389 & 143 & 209 & 467.76 & 305.71 & 1.00 (0.60 - 1.65) & 1.00 \\ 
-  Animal ownership & Yes & 58 & 17 & 27 & 83.06 & 204.67 & 0.67 (0.40 - 1.11) & 0.12 \\ 
-  Beedi made in household & No & 244 & 75 & 107 & 314.24 & 238.67 & 1.00 (0.73 - 1.36) & 1.00 \\ 
-  Beedi made in household & Yes & 203 & 85 & 129 & 236.58 & 359.29 & 1.51 (1.10 - 2.05) & 0.01 \\ 
+Sex & Male & 225 & 91 & 138 & 261.34 & 348.21 & 1.46 (1.07 - 2.00) & 0.018 \\ 
+   & Female & 222 & 69 & 98 & 289.48 & 238.36 & Ref & - \\ 
+  Age & 0-2 months &  & 13 & 13 & 67.44 & 192.77 & Ref & - \\ 
+   & 2-4 months &  & 30 & 35 & 126.64 & 236.89 & 1.23 (0.64 - 2.36) & 0.535 \\ 
+   & 4-8 months &  & 44 & 60 & 219.65 & 200.31 & 1.04 (0.56 - 1.93) & 0.903 \\ 
+   & 8-12 months &  & 34 & 49 & 282.99 & 120.14 & 0.62 (0.33 - 1.18) & 0.147 \\ 
+   & 12-16 months &  & 21 & 38 & 330.92 & 63.46 & 0.33 (0.16 - 0.66) & 0.002 \\ 
+   & 16-24 months &  & 12 & 28 & 448.89 & 26.73 & 0.14 (0.06 - 0.30) & 0 \\ 
+   & >24 months &  & 6 & 13 & 465.35 & 12.89 & 0.07 (0.03 - 0.18) & 0 \\ 
+  \shortstack{Neonatal rotaviral \\diarrhoea} & No neonatal rotavirus & 430 & 152 & 225 & 532.60 & 285.39 & Ref & - \\ 
+   & Neonatal rotavirus & 17 & 8 & 11 & 18.22 & 439.00 & 1.54 (0.76 - 3.13) & 0.235 \\ 
+  Mother's education & None & 139 & 57 & 81 & 148.76 & 383.18 & 1.60 (1.11 - 2.30) & 0.011 \\ 
+   & Primary \& middle school & 125 & 44 & 67 & 155.83 & 282.36 & 1.18 (0.80 - 1.74) & 0.41 \\ 
+   & Higher secondary \& college & 183 & 59 & 88 & 246.23 & 239.61 & Ref & - \\ 
+  Household size & <=5 & 299 & 105 & 151 & 362.73 & 289.47 & Ref & - \\ 
+   & >5 & 148 & 55 & 85 & 188.09 & 292.42 & 1.01 (0.73 - 1.40) & 0.951 \\ 
+  Socioeconomic status & Class I & 277 & 103 & 153 & 326.61 & 315.36 & 1.24 (0.90 - 1.71) & 0.192 \\ 
+   & Class II & 170 & 57 & 83 & 224.21 & 254.23 & Ref & - \\ 
+  Birthweight & <2.5 & 51 & 20 & 29 & 64.91 & 308.12 & 1.06 (0.66 - 1.69) & 0.808 \\ 
+   & >=2.5 & 386 & 137 & 201 & 471.23 & 290.73 & Ref & - \\ 
+   & Missing & 10 & 3 & 6 & 14.67 & 204.50 & 0.70 (0.22 - 2.21) & 0.547 \\ 
+  Animal ownership & No & 389 & 143 & 209 & 467.76 & 305.71 & Ref & - \\ 
+   & Yes & 58 & 17 & 27 & 83.06 & 204.67 & 0.67 (0.40 - 1.11) & 0.118 \\ 
+  Beedi made in household & No & 244 & 75 & 107 & 314.24 & 238.67 & Ref &  \\ 
+   & Yes & 203 & 85 & 129 & 236.58 & 359.29 & 1.51 (1.10 - 2.05) & 0.01 \\ 
    \bottomrule
 \end{tabular}
-\caption{Characteristics of study participants} 
+}
+\caption{Univariable analysis of potential risk factors for rotaviral diarrhoea in children aged two months to two years, India 2002 to 2005.} 
 \label{epic}
 \end{sidewaystable}
 
 
 
-% latex table generated in R 2.15.2 by xtable 1.7-1 package
-% Thu May 09 20:55:02 2013
-\begin{table}[ht]
-\centering
-\begin{tabular}{lrrrll}
-  \toprule
-Period & n cases & \shortstack{Person-years \\at risk} & \shortstack{Rate per 1000 \\person years at risk} & Rate raio & p \\ 
-  \midrule
-Apr - Nov 2002 & 13 & 43.51 & 298.80 &  &  \\ 
-  Dec 2002 - Mar 2003 & 57 & 77.16 & 738.72 & 2.47 (1.35 - 4.52) & 0.0032 \\ 
-  Apr - Nov 2003 & 83 & 245.34 & 338.30 & 1.13 (0.63 - 2.03) & 0.6772 \\ 
-  Dec 2003 - Mar 2004 & 36 & 129.82 & 277.31 & 0.93 (0.49 - 1.75) & 0.8176 \\ 
-  Apr - Nov 2004 & 34 & 202.84 & 167.62 & 0.56 (0.3 - 1.06) & 0.0763 \\ 
-  Dec 2004 - Mar 2005 & 5 & 46.49 & 107.56 & 0.36 (0.13 - 1.01) & 0.0522 \\ 
-  Apr 2005 - Jul 2005 & 8 & 14.12 & 566.72 & 1.9 (0.79 - 4.58) & 0.1543 \\ 
-   \bottomrule
+\begin{sidewaystable}[p]
+\begin{center}
+\begin{tabular}{rrrrrrrrr}
+\toprule
+\multicolumn{1}{l}{} &  & \multicolumn{1}{l}{} &  & \multicolumn{1}{l}{} & \multicolumn{ 2}{c}{Univariable analysis*} & \multicolumn{ 2}{c}{Multivariable analysis**} \\ 
+\multicolumn{1}{c}{Quarter} & \multicolumn{1}{c}{\shortstack{Median age \\ months (IQR)}} & \multicolumn{1}{c}{\shortstack{Incident \\cases}} & \multicolumn{1}{c}{\shortstack{Person time \\years}} & \shortstack{Rate per \\ 1000 \\person years} & \multicolumn{1}{c}{\shortstack{Rate ratio \\(95 \% CI)}} & \shortstack{Wald \\p-value} & \multicolumn{1}{c}{\shortstack{Rate ratio \\(95 \% CI)}} & \multicolumn{1}{c}{\shortstack{Wald \\p-value}} \\ 
+\midrule
+Mar-May 2002 & 1.61 (1.43 - 1.79) & 0 & 0.0011 & 0.00 & 0.00 & 0.999 & 0.00 & 0.999 \\ 
+Jun-Aug 2002 & 2.80 (1.95 - 4.00) & 4 & 0.0131 & 305.78 & 1.67 (0.57 - 4.94) & 0.352 & 1.39 (0.45 - 4.28) & 0.570 \\ 
+Sep-Nov 2002 & 4.32 (2.39 - 6.14) & 9 & 0.0293 & 307.42 & 1.68 (0.76 - 3.74) & 0.203 & 1.33 (0.58 - 3.05) & 0.500 \\ 
+Dec 2002 - Feb 2003 & 4.84 (3.16 - 8.18) & 45 & 0.0536 & 840.17 & 4.60 (2.66 - 7.94) & \textless0.001 & 3.65 (2.06 - 6.49) & \multicolumn{1}{c}{\textless0.001} \\ 
+Mar-May 2003 & 6.87 (4.05 - 10.05) & 38 & 0.0759 & 500.58 & 2.74 (1.56 - 4.80) & \textless0.001 & 2.21 (1.25 - 3.92) & 0.007 \\ 
+Jun-Aug 2003 & 9.07 (5.21 - 12.61) & 39 & 0.0945 & 412.50 & 2.26 (1.29 - 3.95) & 0.004 & 1.97 (1.12 - 3.46) & 0.018 \\ 
+Sep-Nov 2003 & 12.39 (8.68 - 16.00) & 18 & 0.0985 & 182.77 & Reference &       & Reference & \multicolumn{1}{l}{     } \\ 
+Dec 2003 - Feb 2004 & 15.55 (11.71 - 19.07) & 26 & 0.0971 & 267.72 & 1.46 (0.80 - 2.67) & 0.213 & 1.90 (1.03 - 3.49) & 0.039 \\ 
+Mar-May 2004 & 18.89 (15.07 - 22.50) & 18 & 0.093 & 193.50 & 1.06 (0.55 - 2.03) & 0.864 & 1.93 (0.97 - 3.83) & 0.060 \\ 
+Jun-Aug 2004 & 21.82 (18.20 - 24.57) & 13 & 0.0809 & 160.67 & 0.88 (0.43 - 1.79) & 0.723 & 2.32 (1.05 - 5.12) & 0.037 \\ 
+Sep-Nov 2004 & 24.18 (21.04 - 26.09) & 12 & 0.0616 & 194.79 & 1.07 (0.51 - 2.21) & 0.864 & 3.91 (1.62 - 9.44) & 0.002 \\ 
+Dec 2004 - Feb 2005 & 25.21 (23.18 - 26.09) & 6 & 0.0379 & 158.46 & 0.87 (0.34 - 2.18) & 0.762 & 3.87 (1.27 - 11.76) & 0.017 \\ 
+Mar-May 2005 & 26.09 (26.09 - 26.09) & 8 & 0.0227 & 351.80 & 1.92 (0.84 - 4.43) & 0.123 & 8.6 (3.04 - 24.31) & \multicolumn{1}{c}{\textless0.001} \\ 
+\bottomrule
 \end{tabular}
-\caption{Secular trends in incidence rate of rotaviral diarrhoea, India 2002 to 2005} 
+\end{center}
+\caption{Secular trends in rate of rotaviral diarrhoea in children aged two months to two years, India 2002 - 2005. Poisson regression with random effects. IQR: interquartile range. *p for model \textless0.001. **Adjusted for age, p for model \textless 0.001.}
 \label{trend}
-\end{table}
+\end{sidewaystable}
 
+
+
+\begin{sidewaystable}[p]
+\begin{center}
+\begin{tabular}{llllllll}
+\toprule
+ &  & \multicolumn{ 2}{c}{Model 1} & \multicolumn{ 2}{c}{Model 2} & \multicolumn{ 2}{c}{Model 3} \\ 
+ &  & \shortstack{Rate ratio \\(95 \% CI)} & \shortstack{Wald \\p-value} & \shortstack{Rate ratio \\(95 \% CI)} & \shortstack{Wald \\p-value} & \shortstack{Rate ratio \\(95 \% CI)} & \shortstack{Wald \\p-value} \\ 
+ \midrule
+Sex & Male & Reference &  &  &  & Reference &  \\ 
+ & Female & 0.68 (0.50 - 0.91) & \multicolumn{1}{r}{0.009} &  &  & 0.70 (0.52 - 0.93) & \multicolumn{1}{r}{0.015} \\ 
+\shortstack{Number of \\ previous episodes} & \multicolumn{1}{r}{0} &  &  & Reference &  &  &  \\ 
+ & \multicolumn{1}{r}{1} &  &  & 1.29 (0.95 - 1.75) & \multicolumn{1}{r}{0.104} &  &  \\ 
+ & \multicolumn{1}{r}{2} &  &  & 0.91 (0.51 - 1.59) & \multicolumn{1}{r}{0.731} &  &  \\ 
+ & \multicolumn{1}{r}{3} &  &  & 1.47 (0.47 - 4.61) & \multicolumn{1}{r}{0.509} &  &  \\ 
+ & \multicolumn{1}{r}{4} &  &  & 11.64 (2.89 - 46.97) & \multicolumn{1}{r}{0.001} &  &  \\ 
+ & \multicolumn{1}{r}{5} &  &  & 0 (0 - 0.93) & \multicolumn{1}{r}{0.985} &  &  \\ 
+Any previous episode & No &  &  &  &  & Reference &  \\ 
+ & Yes &  &  &  &  & 1.26 (0.60 - 2.64) & \multicolumn{1}{r}{0.540} \\ 
+\shortstack{Neonatal rotaviral \\ diarrheoa} & No & Reference &  &  &  & Reference &  \\ 
+ & Yes & 1.40 (0.70 - 2.79) & \multicolumn{1}{r}{0.344} &  &  & 1.38 (0.72 - 2.65) & \multicolumn{1}{r}{0.334} \\ 
+Mother's education & None & Reference &  &  &  & Reference &  \\ 
+ & Primary and middle school & 0.83 (0.57 - 1.21) & \multicolumn{1}{r}{0.340} &  &  & 0.84 (0.59 - 1.21) & \multicolumn{1}{r}{0.351} \\ 
+ & Higher secondary and college & 0.85 (0.59 - 1.23) & \multicolumn{1}{r}{0.392} &  &  & 0.87 (0.61 - 1.24) & \multicolumn{1}{r}{0.427} \\ 
+Household size & <=5 & Reference &  &  &  & Reference &  \\ 
+ & >5 & 1.17 (0.86 - 1.59) & \multicolumn{1}{r}{0.326} &  &  & 1.17 (0.87 - 1.57) & \multicolumn{1}{r}{0.297} \\ 
+Socioeconomic status & Class I  & Reference &  &  &  & Reference &  \\ 
+ & Class II & 0.86 (0.63 - 1.18) & \multicolumn{1}{r}{0.350} &  &  & 0.87 (0.64 - 1.17) & \multicolumn{1}{r}{0.347} \\ 
+Birthweight & >=2.5 & Reference &  &  &  & Reference &  \\ 
+ & <2.5 & 0.92 (0.59 - 1.43) & \multicolumn{1}{r}{0.695} &  &  & 0.92 (0.60 - 1.39) & \multicolumn{1}{r}{0.682} \\ 
+Animal ownership & No  & Reference &  &  &  & Reference &  \\ 
+ & Yes & 0.89 (0.56 - 1.41) & \multicolumn{1}{r}{0.615} &  &  & 0.90 (0.58 - 1.41) & \multicolumn{1}{r}{0.653} \\ 
+\shortstack{Beedi made \\ in household} & No & Reference &  &  &  & Reference &  \\ 
+ & Yes & 1.48 (1.08 - 2.01) & \multicolumn{1}{r}{0.014} &  &  & 1.45 (1.08 - 1.96) & \multicolumn{1}{r}{0.014} \\ 
+ \bottomrule
+\end{tabular}
+\end{center}
+\caption{Multivariable poisson regression of potential risk factors for rotaviral diarrhoea in children aged two months to two years, India 2002 to 2005. 
+Model 1: Poisson regression with random effects, adjusted for age and calendar time, not adjusted for number of previous episodes or any previous episode, p for model < 0.001. p$\theta$ = 0.004.
+Model 2: Poisson regression for number of previous episodes, no random effects, adjusted for calendar time and age, p for model 0.071. 
+Model 3: Poisson regression with random effects, adjusted for age and calendar time, and any previous episode, p for model < 0.001. p$\theta$ = 0.004.p$\theta$ = 0.268. }
+\label{multivar}
+\end{sidewaystable}
 
 \end{document}
