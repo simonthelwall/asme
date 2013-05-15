@@ -1,4 +1,58 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[11pt,a4paper]{article}\usepackage{graphicx, color}
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\definecolor{fgcolor}{rgb}{0.2, 0.2, 0.2}
+\newcommand{\hlnumber}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlfunctioncall}[1]{\textcolor[rgb]{0.501960784313725,0,0.329411764705882}{\textbf{#1}}}%
+\newcommand{\hlstring}[1]{\textcolor[rgb]{0.6,0.6,1}{#1}}%
+\newcommand{\hlkeyword}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlargument}[1]{\textcolor[rgb]{0.690196078431373,0.250980392156863,0.0196078431372549}{#1}}%
+\newcommand{\hlcomment}[1]{\textcolor[rgb]{0.180392156862745,0.6,0.341176470588235}{#1}}%
+\newcommand{\hlroxygencomment}[1]{\textcolor[rgb]{0.43921568627451,0.47843137254902,0.701960784313725}{#1}}%
+\newcommand{\hlformalargs}[1]{\textcolor[rgb]{0.690196078431373,0.250980392156863,0.0196078431372549}{#1}}%
+\newcommand{\hleqformalargs}[1]{\textcolor[rgb]{0.690196078431373,0.250980392156863,0.0196078431372549}{#1}}%
+\newcommand{\hlassignement}[1]{\textcolor[rgb]{0,0,0}{\textbf{#1}}}%
+\newcommand{\hlpackage}[1]{\textcolor[rgb]{0.588235294117647,0.709803921568627,0.145098039215686}{#1}}%
+\newcommand{\hlslot}[1]{\textit{#1}}%
+\newcommand{\hlsymbol}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\newcommand{\hlprompt}[1]{\textcolor[rgb]{0.2,0.2,0.2}{#1}}%
+
+\usepackage{framed}
+\makeatletter
+\newenvironment{kframe}{%
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\definecolor{shadecolor}{rgb}{.97, .97, .97}
+\definecolor{messagecolor}{rgb}{0, 0, 0}
+\definecolor{warningcolor}{rgb}{1, 0, 1}
+\definecolor{errorcolor}{rgb}{1, 0, 0}
+\newenvironment{knitrout}{}{} % an empty environment to be redefined in TeX
+
+\usepackage{alltt}
 \title{ASME assignment}
 \author{Student number: 106936}
 \usepackage{booktabs}
@@ -29,91 +83,12 @@
         {\expandafter\gobblepars\@gobble}%
         {}}
 \makeatother
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
 \begin{document}
 %\SweaveOpts{concordance=TRUE}
 
-<<setup, results='asis', echo=FALSE, message=FALSE, warning=FALSE>>=
-library(survival)
-library(foreign)
-library(plyr)
-library(xtable)
-# functions ####
-perc <- function(d,n){
-  round((d/n)*100,2)
-}
 
-rate_per_k <- function(x,y){
-  (x/y)*1000
-}
 
-srOrWrapper <- function(x){
-  cbind(HR=round(1/exp(coef(x)), 2),
-        se=round(summary(x)$table[,2], 2), 
-        lci=round((1/exp(coef(x)))/exp(1.96*summary(x)$table[,2]), 2),
-        uci=round((1/exp(coef(x)))*exp(1.96*summary(x)$table[,2]), 2),
-        p=round(summary(x)$table[,4], 4))
-}
-
-se_log_rr <- function(x,y){
-  sqrt((1/x)+(1/y))
-}
-
-z_rr <- function(x,y){
-  log(x)/y
-}
-
-p_rr <- function(x){
-  2*pnorm(-abs(x))
-}
-
-decimal2<-function(x){paste(x,".00",sep="")} # decimal replacer for character strings, 2 decimal places
-
-decimal1<-function(x){paste(x,"0",sep="")} # decimal replacer for character strings, 1 decimal place
-
-simpleCap<-function(x){
-  s<-as.character(x)
-  s<-paste(toupper(substring(s,1,1)),substring(s,2),sep="")
-  #  s<-as.factor(s)
-}
-
-extractCI <- function(m){
-  beta <- round(coef(m)["coef"], 3)
-  se <- round(coef(m)["se(coef)"], 3)
-  p <- round(coef(m)["Pr(>|z|)"], 3)
-  ci <- round(m$conf.int[c("lower .95", "upper .95")],3)
-  res <- rbind(beta, round(exp(beta),3), ci[1], ci[2], p)
-  res
-}
-
-# reading data in ####
-
-first <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\firstrv.dta")
-#first<-read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/firstrv.dta")
-#first<-read.dta("/home/simon/Documents/MSc/Modules/ASME/firstrv.dta")
-# can start with very basics. How many children, how many events. Age and sex. 
-first$lbw <- as.character(first$lbw)
-all <- read.dta("E:\\My Documents B\\MSc stuff\\SME\\asme\\allrv.dta")
-#all <- read.dta("/home/simon/Documents/MSc_modules/asme/ASMEdata/allrv.dta")
-#all <- read.dta("/home/simon/Documents/MSc/Modules/ASME//allrv.dta")
-# get max number of episodes by id and time at risk
-all$case <- 0
-all$case[all$exittype == "RV diarrhoea"] <- 1
-all$dar <- as.numeric(all$endfoll - all$startfoll,format="days")
-all$doe2 <- as.numeric(all$startfoll, format="days")
-all$dexit <- as.numeric(all$endfoll, format="days")
-max.episodes <- ddply(all, .(id), summarise, max=max(numprevepisode, na.rm=TRUE), tdar=sum(dar, na.rm=TRUE))
-
-# Combine max episodes and tdar into first dataframe
-first <- merge(first, max.episodes, all.x=TRUE, by.x="id", by.y="id")
-first$tyar <- first$tdar/365.25
-first$doe2 <- as.numeric(first$doe)
-first$dexit <-as.numeric(first$exitdate)
-first$fu.time <- first$dexit - first$doe2
-first$case <- 0
-first$case[first$exittype == "RV diarrhoea"] <- 1
-
-# end read in ####
-@
 \section{Methods}
 Associations between potential risk factors and the rate of rotaviral diarrhoea was examined first by calculating rate ratios and tested using \textit{z}-tests. \\
 \indent Interactions between variables were examined first by Mantel-Haenszel analyses where interactions were considered important if they had a substantial effect on the rate ratio.
@@ -135,16 +110,16 @@ To account for the effect of repeated observations on an individual, random effe
 \indent To address whether the number of previous episodes affected the incidence of rotaviral diarrhoea, a univariable Poisson regression with number of previous episodes as an ordered categorical variable was performed first.
 Then a multivariable model, with previous events as a binary variable was fitted by Poisson regression with random effects.
 Records with missing data were dropped from all multivariable analyses.\\
-\indent Univariable analyses were performed in \Sexpr{substring(R.version.string,1,16)}, Mantel-Haenszel stratified analyses and multivariable poisson regression were performed in Stata version 12.\\
+\indent Univariable analyses were performed in R version 2.15.2, Mantel-Haenszel stratified analyses and multivariable poisson regression were performed in Stata version 12.\\
 %
 \section{Results}
-\indent A total of \Sexpr{length(first$case)} children were recruited to the study, of these \Sexpr{sum(first$case)} (\Sexpr{round((sum(first$case)/length(first$case)*100), 2)} \%) developed rotaviral diarrhoea. 
-A total of \Sexpr{sum(all$case, na.rm=TRUE)} episodes of rotaviral diarrhoea were recorded over the duration of the study.
-The incidence rate for any case of rotaviral diarrhoea was \Sexpr{round((sum(first$case)/(sum(first$fu.time)/365.25))*1000, 2)} per thousand person-years and the incidence rate for all cases was \Sexpr{round((sum(first$max)/sum(first$tyar))*1000 ,2)} per thousand person-years.
-\Sexpr{sum(all$case[all$numprev==0])} cases occurred in children who had not previously experienced rotaviral diarrhoea, \Sexpr{sum(all$case[all$numprev==1])} cases occurred in children with one previous episode, \Sexpr{sum(all$case[all$numprev==2])} cases in children with two, \Sexpr{sum(all$case[all$numprev==3])} in children with three, \Sexpr{sum(all$case[all$numprev==4])} in children with four and \Sexpr{sum(all$case[all$numprev==5])} cases in children with five. \\
-\indent \Sexpr{length(all$id[all$exittype=="Lost to followup"])} (\Sexpr{round(((length(all$id[all$exittype=="Lost to followup"])/length(unique(all$id)))*100),0)} \%) children were lost to follow-up. 
+\indent A total of 447 children were recruited to the study, of these 160 (35.79 \%) developed rotaviral diarrhoea. 
+A total of 236 episodes of rotaviral diarrhoea were recorded over the duration of the study.
+The incidence rate for any case of rotaviral diarrhoea was 290.48 per thousand person-years and the incidence rate for all cases was 310.83 per thousand person-years.
+160 cases occurred in children who had not previously experienced rotaviral diarrhoea, 56 cases occurred in children with one previous episode, 14 cases in children with two, 4 in children with three, 2 in children with four and 0 cases in children with five. \\
+\indent 67 (15 \%) children were lost to follow-up. 
 Loss to follow-up was higher in children whose mothers had no education (23 \%) compared to those with primary and middle school education (11 \%) and compared to those whose mothers have higher secondary education (10 \%, p = 0.002). 
-\Sexpr{length(unique(first$id[is.na(first$lbw)==TRUE]))} children had no data on birthweight. 
+10 children had no data on birthweight. 
 There was no evidence that the rate of diarrhoea was higher among these children. \\
 \indent In univariable analyses there was strong evidence that the rate of diarrhoea was higher in males than in females, was higher in children whose mother had received no education compared to those whose mother had received higher education and was higher for children from households in which beedi were made than those from households in which they weren't (table \ref{epic}). \\
 \indent Mantel-Haenzsel analysis indicated interactions between animal ownership and socioeconomic status and between low birthweight and neonatal rotaviral diarrhoea. \\
@@ -179,11 +154,48 @@ Non-random error in diagnosis could result in over or underestimation of associa
 The reason for the association between male sex and rotaviral diarrhoea is not clear and if another co-mobidity which predisposed to rotaviral diarrhoea were more prevalent among males, then it could account for the difference. 
 Similarly the mechanism by which beedi manufacture increases the rate is not known but potential major confounders such as SES, education level and household size have been controlled for. \\
 \indent In conclusion, the rate of rotaviral diarrhoea varied by time, risk factors included beedi work and male sex but not previous experience of rotaviral diarrhoea.
-<<epic_table, results='asis', echo=FALSE>>=
-source("epictable.R")
-print(tab, include.rownames=FALSE, booktabs=TRUE, size="small", floating.environment='sidewaystable', sanitize.text.function = function(x){x})
-rm(tab)
-@
+% latex table generated in R 2.15.2 by xtable 1.7-1 package
+% Tue May 14 10:28:48 2013
+\begin{sidewaystable}[ht]
+\centering
+{\small
+\begin{tabular}{llrrrrrll}
+  \toprule
+Characteristic &  & n & Cases & Total episodes & \shortstack{Person years \\at risk} & \shortstack{Rate, per \\1000 person years} & Rate ratio & p \\ 
+  \midrule
+Sex & Male & 225 & 91 & 138 & 261.34 & 348.21 & 1.46 (1.07 - 2.00) & 0.018 \\ 
+   & Female & 222 & 69 & 98 & 289.48 & 238.36 & Ref & - \\ 
+  Age & 0-2 months &  & 13 & 13 & 67.44 & 192.77 & Ref & - \\ 
+   & 2-4 months &  & 30 & 35 & 126.64 & 236.89 & 1.23 (0.64 - 2.36) & 0.535 \\ 
+   & 4-8 months &  & 44 & 60 & 219.65 & 200.31 & 1.04 (0.56 - 1.93) & 0.903 \\ 
+   & 8-12 months &  & 34 & 49 & 282.99 & 120.14 & 0.62 (0.33 - 1.18) & 0.147 \\ 
+   & 12-16 months &  & 21 & 38 & 330.92 & 63.46 & 0.33 (0.16 - 0.66) & 0.002 \\ 
+   & 16-24 months &  & 12 & 28 & 448.89 & 26.73 & 0.14 (0.06 - 0.30) & 0 \\ 
+   & >24 months &  & 6 & 13 & 465.35 & 12.89 & 0.07 (0.03 - 0.18) & 0 \\ 
+  \shortstack{Neonatal rotaviral \\diarrhoea} & No neonatal rotavirus & 430 & 152 & 225 & 532.60 & 285.39 & Ref & - \\ 
+   & Neonatal rotavirus & 17 & 8 & 11 & 18.22 & 439.00 & 1.54 (0.76 - 3.13) & 0.235 \\ 
+  Mother's education & None & 139 & 57 & 81 & 148.76 & 383.18 & 1.60 (1.11 - 2.30) & 0.011 \\ 
+   & Primary \& middle school & 125 & 44 & 67 & 155.83 & 282.36 & 1.18 (0.80 - 1.74) & 0.41 \\ 
+   & Higher secondary \& college & 183 & 59 & 88 & 246.23 & 239.61 & Ref & - \\ 
+  Household size & <=5 & 299 & 105 & 151 & 362.73 & 289.47 & Ref & - \\ 
+   & >5 & 148 & 55 & 85 & 188.09 & 292.42 & 1.01 (0.73 - 1.40) & 0.951 \\ 
+  Socioeconomic status & Class I & 277 & 103 & 153 & 326.61 & 315.36 & 1.24 (0.90 - 1.71) & 0.192 \\ 
+   & Class II & 170 & 57 & 83 & 224.21 & 254.23 & Ref & - \\ 
+  Birthweight & <2.5 & 51 & 20 & 29 & 64.91 & 308.12 & 1.06 (0.66 - 1.69) & 0.808 \\ 
+   & >=2.5 & 386 & 137 & 201 & 471.23 & 290.73 & Ref & - \\ 
+   & Missing & 10 & 3 & 6 & 14.67 & 204.50 & 0.70 (0.22 - 2.21) & 0.547 \\ 
+  Animal ownership & No & 389 & 143 & 209 & 467.76 & 305.71 & Ref & - \\ 
+   & Yes & 58 & 17 & 27 & 83.06 & 204.67 & 0.67 (0.40 - 1.11) & 0.118 \\ 
+  Beedi made in household & No & 244 & 75 & 107 & 314.24 & 238.67 & Ref &  \\ 
+   & Yes & 203 & 85 & 129 & 236.58 & 359.29 & 1.51 (1.10 - 2.05) & 0.01 \\ 
+   \bottomrule
+\end{tabular}
+}
+\caption{Univariable analysis of potential risk factors for rotaviral diarrhoea in children aged two months to two years, India 2002 to 2005.} 
+\label{epic}
+\end{sidewaystable}
+
+
 
 \begin{sidewaystable}[p]
 \begin{center}
@@ -211,11 +223,8 @@ Mar-May 2005 & 26.09 (26.09 - 26.09) & 8 & 0.0227 & 351.80 & 1.92 (0.84 - 4.43) 
 \caption{Secular trends in rate of rotaviral diarrhoea in children aged two months to two years, India 2002 - 2005. Poisson regression with random effects. IQR: interquartile range. *p for model \textless0.001. **Adjusted for age, p for model \textless 0.001.}
 \label{trend}
 \end{sidewaystable}
-<<trendtable, results='asis', echo=FALSE>>=
-#source("incidence_rate.R")
-#print(t, include.rownames=FALSE, booktabs=TRUE, sanitize.text.function = function(x){x})
-#rm(t)
-@
+
+
 
 \begin{sidewaystable}[p]
 \begin{center}
