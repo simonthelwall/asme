@@ -1,6 +1,9 @@
 asme
 ====
 
+It's worth noting I didn't get a great grade for this assignment. It would not make a good model to follow. 
+The spatial epi module grade was much better!
+
 Notes on Advanced Statistical Methods in Epidemiology
 
 1. What was the incidence rate of post-neonatal rotavirus diarrhoea in this cohort? Did this 
